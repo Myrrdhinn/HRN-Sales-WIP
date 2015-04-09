@@ -12,7 +12,7 @@ use HRNSales\main as main;
 <link href="css/admin_general.css" rel="stylesheet">
 <link rel="stylesheet" href="css/admin_edit_general.css" />
 <link rel="stylesheet" href="css/admin_index.css" />
-<link rel="stylesheet" href="css/goals.css" />
+<link rel="stylesheet" href="css/analytics.css" />
 <script src="js/analytics.js"></script> 
 </head>
 <body>
@@ -51,10 +51,14 @@ if (isset($_SESSION['admin'])) {
   
     $content .='<p class="WelcomeTexT">Change the desirable goals:</p>';
   
-  }//if session user is set
+  }
+     $content .='
+	 <!-- ;) -->
+	 <div id="MainAnalContent">';
   
-  $content .= $main->get_analytics_data(); 
-
+     $content .= $main->get_analytics_data('',''); 
+	 
+   $content .='</div>';
   	   
 	 $content .='<br /><br /><br />
   <a href="logout"><button name="logout">Logout</button></a>

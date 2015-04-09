@@ -1,0 +1,32 @@
+@charset "utf-8";
+/* General Definitions*/
+
+.UserName {
+  width: 100%;
+  width: 14vw;
+  display: inline-block;
+}
+
+.TotalPitchNum, .TotalDealNum, .TotalPrice {
+    margin: 0 10px;
+	display: inline-block;
+}
+
+.Dates li {
+	list-style-type:none;
+	
+}
+
+.Dates li div {
+	display: inline-block;
+	
+}
+
+.PitchDate {
+	min-width: 11vw;
+}
+
+.PitchNum, .DealNum {
+	margin:5px 10px;
+	
+}

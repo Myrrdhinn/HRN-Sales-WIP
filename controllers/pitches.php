@@ -87,10 +87,15 @@ class pitches extends config {
 		 $content .='</div>'; //header col end
 		
 		foreach ($data as $pitch) {
-			$content .='<div class="TableCol" data-pitchnum="'.$pitch[11].'">';
+			if (isset($pitch[12])){
+				$content .='<div class="TableCol" data-pitchnum="'.$pitch[12].'">';
+			}else {
+				$content .='<div class="TableCol">';
+			}
+			
 			$s = 0;
 		    foreach ($pitch as $pt) {
-				if ($s != 11) {
+				if ($s != 12) {
 					$content .='<div class="TableRow">'.$pt.'</div>';
 				}
 				$s++;

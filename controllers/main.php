@@ -437,43 +437,122 @@ Goals functions
 -------------------------------
 */	
 
- public function get_analytics_data() {
+ public function get_analytics_data($cat, $val) {
 	 $content = '';
-	 $i = 0;
+	 
 	 	$users_q = "SELECT id, username FROM users";
 		 $users = $this->pdo->prepare($users_q);
 		 $users->execute();
 		 
 				if ($users->rowCount() > 0) {
 					while($user = $users->fetch()) {
-						$data[$i][0] = $user[1]; 
+
 						
-						/*
-						$type_q = "SELECT SUM(pr.deals) AS deals FROM pitch_result as pr, pitch_data as pd WHERE pd.user_id = :id AND pr.pitch_data_id=pd.id";
-						 $deals = $this->pdo->prepare($type_q);
-						 $deals->bindValue(':id', $user[0], \PDO::PARAM_INT);
-						 $deals->execute();
+							$data[0][0] = '';
+					
+							$i = 0;
+							$plus_q = '';
+							$s = 0;
+							
+							
+							//Get basic date about a sponsors
+											   //pitch
+							$pitch_q = "SELECT COUNT(pd.id) as pitches, SUM(pr.deals) as deals, SUM(pr.price) as price, pd.date_of_pitch FROM users as u, pitch_data as pd, pitch_result as pr WHERE u.id= :id AND u.id=pd.user_id AND pr.pitch_data_id=pd.id";	
+					
+					    if (isset($cat[0]) && isset($val[0])) {
+							  foreach ($category as $cat) {
+								  $plus_q .= ' AND ';
+								  $plus_q .='(';
+								  
+								  foreach ($value[$s] as $val) {
+									$plus_q .= $cat.'='.$val;	
+									$plus_q .= ' OR ';
+								  }
+								  
+								  $plus_q = substr($plus_q,0,-4);
+								  $plus_q .= ')';
+								  $s++;
+							  }
+						  }
+						  
+							  
+						  //$plus_q = " AND (u.id=1 OR u.id=2)";	
+						  $pitch_q .=	$plus_q;
+					
 						
-						$deal_data = $deals->fetch();
-						$data[$i][1] = $deal_data[0]; 
-						*/
+						$pitch_q .=' GROUP BY pd.date_of_pitch ORDER BY pd.date';
 						
-					$i++;	
+					
+						
+							$pitch = $this->pdo->prepare($pitch_q);
+							$pitch->bindValue(':id', $user[0], \PDO::PARAM_INT);
+							$pitch->execute();
+							
+							$pitch_num = 0;
+							$deal_num = 0;
+							$list_data = '';
+							$total_price = 0;
+					
+								if ($pitch->rowCount() > 0) {
+										while($pitches = $pitch->fetch()){
+											$data[$i][0] = $pitches['date_of_pitch'];
+											$data[$i][1] = $pitches['pitches'];
+											$data[$i][2] = $pitches['deals'];
+											$data[$i][3] = $pitches['price'];
+											
+											$list_data .='<li>
+											<div class="PitchDate">'.$pitches['date_of_pitch'].'</div> 
+											<div class="PitchNum">'.$pitches['pitches'].'</div>
+											<div class="DealNum">'.$pitches['deals'].'</div>
+											<div class="Price">'.$pitches['price'].'</div>
+										 </li>';
+											
+											$pitch_num += $pitches['pitches'];
+										    $deal_num += $pitches['deals'];
+											$total_price += $pitches['price'];
+
+											$i++;
+										} //stat_q fetch
+								}  //stat num row end
+								
+							
+							
+					
+								 $content .= '
+							  <!--The main wrapper -->
+							  <div id="AnalyticsWrapper">
+								 
+							  <!-- User container-->
+								  <div class="UserContainer">
+									<div class="UserName">'.$user[1].'</div>
+									  <div class="TotalPitchNum">'.$pitch_num.'</div>
+									  <div class="TotalDealNum">'.$deal_num.'</div>
+									  <div class="TotalPrice">'.$total_price.'</div>
+									  <ul class="Dates">
+									  '.$list_data.'
+
+									 </ul>
+								
+								  </div>							 
+								</div>
+									 ';	
+							
+							
+								
+
+
+					 
+						
+
+						
+					
 					}
 				}
-	 /*
-	 $summary = 0;
-	 foreach ($data as $deal) {
-		  $content .='<p>'.$deal[0].': '.$deal[1].'</p>';
-		  $summary = $summary + $deal[1];
-	 }
-	 $content .='<br /><p>All: '.$summary.'</p>';
-	 
-	 $needed = 60 - $summary;
-	 
-	 $content .='<br /><p>We Need: '.$needed.'</p>';
-	 
-	 */		
+				
+				 
+				 
+
+
 	return $content;	
 	 
 	 
