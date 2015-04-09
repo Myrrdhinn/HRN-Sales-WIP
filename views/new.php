@@ -107,10 +107,10 @@ use HRNSales\main as main;
            </select><br />
 		  <input class="AdminInputField" id="NumberOfDeals" name="NumberOfDeals" type="number" placeholder="Number of Deals" value="'.$data['deals'].'" /><br />
 	      <textarea class="TextAreaClass" id="Reason" name="Reason">'.$data['reason'].'</textarea><br />
-
+           <input type="hidden" id="Edit_val" value="'.$_SESSION['edit_pitch'].'">  
    </fieldset>';
-
-    //$content .= '<button class="AdminSubmitButton" name="NewPitchSave" id="NewPitchSave" type="Submit">Save</button>';
+  
+    $content .= '<button class="AdminSubmitButton" id="EditPitchSave" type="Submit">Save</button>';
 	
  $content .= '
 
@@ -119,7 +119,6 @@ use HRNSales\main as main;
   	   <!-- End of Form Container-->';
 	   
 	   //if isset pitch edit
-	   unset($_SESSION['edit_pitch']);
 	   //-------------------------------------------------------------------------------------
 	      } else {
 		   //if isset pitch edit is NOT set

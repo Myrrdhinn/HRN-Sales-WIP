@@ -39,13 +39,30 @@ Save number of calls
 
 
 /*///////////// 
-Save pitch request
+Pitch edit request
 ///////////////*/
 
 
  if(isset($_POST['action']) && $_POST['action'] == 'edit_pitch'){
 	if (isset($_POST['pitch_num'])) {
 	  $_SESSION['edit_pitch'] =  $_POST['pitch_num'];
+	  echo 'Success';	
+	}
+
+}// save Pitch data
+
+
+
+/*///////////// 
+Actual Pitch edit
+///////////////*/
+
+
+ if(isset($_POST['action']) && $_POST['action'] == 'Edit_Pitch_Data'){
+	$the_main = new main\main;
+    $result = $the_main->edit_pitch();
+	if (isset($result)) {
+	  $_SESSION['Result'] =  'Success';
 	  echo 'Success';	
 	}
 
