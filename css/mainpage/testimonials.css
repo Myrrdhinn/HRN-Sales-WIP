@@ -1,0 +1,57 @@
+@charset "utf-8";
+/* CSS Document for TESTIMONIALS section of the Main Page */
+
+/*Testimonials*/
+#testimonial-container{
+	width:100%;
+	background:#06222C;
+	text-align:center;
+	color:#082d3c;
+}
+.TestimonialChomaImg{
+	margin: 0 auto;	
+	
+}
+#testimonial-container p{
+	font-size:24px;
+	line-height: 30px;
+	max-width:750px;
+	text-align:center;
+	margin:0 auto;
+	font-weight: 300;
+	color: #fff;
+	padding-top: 50px;
+	padding-bottom: 50px;
+	}		
+.testimonial-logo{
+    width:100%;	
+background:#06222C;
+text-align:center;
+padding-bottom: 20px;
+}
+
+.orbit-bullets-container {
+	margin-bottom: 30px;	
+}
+.orbit-bullets {
+	margin-bottom: 35px;
+	max-width: 200px;
+	margin: 0 auto;	
+}
+.orbit-bullets li {
+	background-color: rgba(255, 255, 255, 0.2);
+	margin-bottom: 10px;
+	width: 13px;
+	height: 13px;
+	margin-right: 8px;
+}
+
+.orbit-next, .orbit-prev, .orbit-slide-number, .orbit-timer {
+	display: none;	
+}
+@media (max-width:768px){
+	#testimonial-container {
+		padding-top: 0;	
+	}
+}
+/*End Testimonials*/

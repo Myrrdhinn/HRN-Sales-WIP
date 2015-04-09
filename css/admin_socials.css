@@ -1,0 +1,44 @@
+@charset "utf-8";
+/* General Definitions*/
+
+body {
+	font-family: 'Roboto', sans-serif;
+}
+
+.RobotoText {
+  font-family: 'Roboto', sans-serif;
+}
+.OswaldText {
+  font-family: 'Oswald', sans-serif;
+}
+
+/*END  General Definitions*/
+
+
+
+.SocialSubmitButton {
+	  border: 0;
+	  margin: 0 auto;
+
+	  padding: 14px 14px;
+	  text-transform: uppercase;
+	  text-align: center;
+	  font-size: 20px;
+	  color: #fff;
+	  transition: all 0.3s;
+	  background: #00a8c6;
+
+	
+}
+
+.SocialSubmitButton:hover {
+	transition: all 0.3s;
+    background: #FC354C;
+    cursor: pointer;
+	
+}
+
+#Name {
+    margin:40px auto 40px auto;
+	text-align:center;
+}

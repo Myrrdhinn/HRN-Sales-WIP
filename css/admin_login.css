@@ -1,0 +1,35 @@
+@charset "utf-8";
+/* General Definitions*/
+
+.RobotoText {
+  font-family: 'Roboto', sans-serif;
+}
+.OswaldText {
+  font-family: 'Oswald', sans-serif;
+}
+
+/*END  General Definitions*/
+
+
+#AdminLoginForm ul {
+	list-style-type:none;
+	padding:0;
+	margin:0;
+}
+
+
+
+.fa-check {
+	color:#2A7813;
+	
+}
+
+.fa-times {
+	color:#940F11;
+	
+}
+
+.LoginResponse {
+	 font-size: 18px;
+	 background-color:rgba(229, 229, 229, 0.33);
+}

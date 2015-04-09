@@ -1,0 +1,52 @@
+@charset "utf-8";
+/* General Definitions*/
+
+.RobotoText {
+  font-family: 'Roboto', sans-serif;
+}
+.OswaldText {
+  font-family: 'Oswald', sans-serif;
+}
+
+/*END  General Definitions*/
+
+#SponsorName {
+	margin:40px auto 40px auto;
+	text-align:center;
+}
+
+.AccessGranted{
+	color:#090;
+	font-weight:bold;
+}
+
+.AccessDenied {
+	color:#900;
+	font-weight:bold;
+}
+
+.PermissionButton {
+	   border: 0;
+	  margin: 10px auto 50px auto;
+	  width: 100%;
+	  padding: 10px 10px;
+	  text-transform: uppercase;
+	  text-align: center;
+	  display:block;
+	  color: #fff;
+	  transition: all 0.3s;
+	  background: #00a8c6;
+	  cursor:pointer;
+
+}
+.PermRemove:hover {
+	 background:#900;
+}
+
+.PermAdd:hover {
+	 background:#090;
+}
+
+.SponsorPermUser {
+	font-size:16pt;
+}

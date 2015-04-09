@@ -1,0 +1,21 @@
+@charset "utf-8";
+/* General Definitions*/
+
+.RobotoText {
+  font-family: 'Roboto', sans-serif;
+}
+.OswaldText {
+  font-family: 'Oswald', sans-serif;
+}
+
+/*END  General Definitions*/
+
+.log_item {
+	margin : 5px;
+	
+}
+
+.log_p{
+	text-align:center;
+	
+}
