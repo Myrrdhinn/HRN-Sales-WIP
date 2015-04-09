@@ -30,7 +30,7 @@ public function login($username, $password) {
 		$user = str_replace(array("'", "-", ";", "#"), array(" ", " ", " "," "),$username);
 		$user_pass = $this->rip_tags($password);
 		
-		 $pass_q = "SELECT id, password, email FROM users WHERE username = :username ORDER BY date DESC LIMIT 0,1";
+		 $pass_q = "SELECT id, password, email, rank FROM users WHERE username = :username ORDER BY date DESC LIMIT 0,1";
 		 $correct_pass = $this->pdo->prepare($pass_q);
 		 $correct_pass->bindValue(':username', $user, \PDO::PARAM_STR);
 		 $correct_pass->execute();
@@ -58,6 +58,10 @@ public function login($username, $password) {
 						   setcookie("Moo", $pass['id'], time()+3600*8);
 						   
 						   $_SESSION['user_id'] = $pass['id'];
+						   
+						   if ($pass['rank'] == 1) {
+							   $_SESSION['admin'] = true;
+						   }
 						   
 						   /*
 						   include_once ('controllers/rank.php');

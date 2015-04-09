@@ -1,0 +1,25 @@
+#CallInputField {
+	max-width:150px;
+	display: inline-block;	
+}
+
+#CallSubmit {
+	display: inline-block;
+	max-width:150px;
+	
+}
+
+#GoalInputs {
+  max-width: 615px;
+  width: 100%;
+  margin: 3vw auto 0 auto;	
+	
+}
+
+.Inputs {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 305px;
+  display: inline-block;	
+	
+}

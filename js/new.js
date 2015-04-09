@@ -118,9 +118,14 @@ function save_data(mode) {
 		  var NumberOfDeals = $('#NumberOfDeals').val();
 		  var Reason = $('#Reason').val();
 		  var Edit = $('#Edit_val').val();
+		  var Price = $('#SellPrice').val(); 
 		  
 		  if ((typeof Edit == "undefined") || Edit == '') {
 			  Edit = -1;
+		  }
+		  
+		   if ((typeof Price == "undefined") || Price == '') {
+			  Price = 0;
 		  }
 		  
 		  
@@ -139,7 +144,7 @@ function save_data(mode) {
 						type: 'POST',
 						data: {action:mode, FirstName:FirstName, LastName:LastName, DelegateTitle:DelegateTitle, 
 						CompanyName:CompanyName, Country:Country, PitchType:PitchType, CallBackDate:CallBackDate, 
-						PitchResult:PitchResult, NumberOfDeals:NumberOfDeals, Reason:Reason, Edit:Edit},
+						PitchResult:PitchResult, NumberOfDeals:NumberOfDeals, Reason:Reason, Edit:Edit, Price:Price},
 						success: function(data) {
 							
 							if (data != '' && typeof data != 'undefined'){

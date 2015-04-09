@@ -165,13 +165,14 @@ public function save_pitch() {
 		 	$pitch_data_id = $this->pdo->lastInsertId();
 			
 			
-		 $pitch_result_q = "INSERT INTO pitch_result SET pitch_data_id = :data_id, result_type_id = :result_type, deals = :deal_nums, callback_date = :callback, reason = :reason";
+		 $pitch_result_q = "INSERT INTO pitch_result SET pitch_data_id = :data_id, result_type_id = :result_type, deals = :deal_nums, callback_date = :callback, price = :price, reason = :reason";
 		 $pitch_result = $this->pdo->prepare($pitch_result_q);
 		 
 		 $pitch_result->bindValue(':data_id', $pitch_data_id, \PDO::PARAM_INT);
 		 $pitch_result->bindValue(':result_type', $_POST['PitchResult'], \PDO::PARAM_INT);
 		 $pitch_result->bindValue(':deal_nums', $_POST['NumberOfDeals'], \PDO::PARAM_INT);
 		 $pitch_result->bindValue(':callback', $_POST['CallBackDate'], \PDO::PARAM_STR);
+		 $pitch_result->bindValue(':price', $_POST['Price'], \PDO::PARAM_STR);
 		 $pitch_result->bindValue(':reason', $_POST['Reason'], \PDO::PARAM_STR);
 		 
 		 $pitch_result->execute();
@@ -267,13 +268,14 @@ public function edit_pitch() {
 				$pitch_data_id = $this->pdo->lastInsertId();
 		}
 		
-	   if( ($CurrentData['retype'] != $_POST['PitchResult']) || ($CurrentData['deals'] != $_POST['NumberOfDeals']) || ($CurrentData['callback_date'] != $_POST['CallBackDate']) || ($CurrentData['reason'] != $_POST['Reason']) ){			
-		 $pitch_result_q = "UPDATE pitch_result SET result_type_id = :result_type, deals = :deal_nums, callback_date = :callback, reason = :reason WHERE id= :id";
+	   if( ($CurrentData['retype'] != $_POST['PitchResult']) || ($CurrentData['deals'] != $_POST['NumberOfDeals']) || ($CurrentData['callback_date'] != $_POST['CallBackDate']) || ($CurrentData['reason'] != $_POST['Reason']) || ($CurrentData['price'] != $_POST['Price']) ){			
+		 $pitch_result_q = "UPDATE pitch_result SET result_type_id = :result_type, deals = :deal_nums, callback_date = :callback, price = :price, reason = :reason WHERE id= :id";
 		 $pitch_result = $this->pdo->prepare($pitch_result_q);
 		 
 		 $pitch_result->bindValue(':result_type', $_POST['PitchResult'], \PDO::PARAM_INT);
 		 $pitch_result->bindValue(':deal_nums', $_POST['NumberOfDeals'], \PDO::PARAM_INT);
 		 $pitch_result->bindValue(':callback', $_POST['CallBackDate'], \PDO::PARAM_STR);
+		 $pitch_result->bindValue(':price', $_POST['Price'], \PDO::PARAM_STR);
 		 $pitch_result->bindValue(':reason', $_POST['Reason'], \PDO::PARAM_STR);
 		 $pitch_result->bindValue(':id', $CurrentData['id'], \PDO::PARAM_INT);
 		 
@@ -304,7 +306,7 @@ public function get_pitch_edit_data($pitch_num) {
 		
 		//Get basic date about a sponsors
 		                    //pitch date            Deleagate name,     Title          country   pitch type, result type, deals,   callback      reason
-		$pitch_q = "SELECT pr.id, de.id AS delegate_id, cy.id AS company_id, pd.date_of_pitch, de.first_name, de.last_name, de.title, co.country_code, co.id AS country_id, delc.id AS delc_conn_id, pd.id AS pitch_data_id, pt.type as ptype, re.type as retype, pr.deals, pr.callback_date, pr.reason, cy.company_name, u.username FROM pitch_data as pd, delegates as de, delegate_connection as delc, countries as co, pitch_type as pt, result_type as re, pitch_result as pr, company as cy, users as u WHERE pd.user_id=u.id AND pd.delegate_id=delc.delegate_id AND delc.country_id=co.id AND delc.delegate_id=de.id AND delc.company_id=cy.id AND pd.pitch_type_id=pt.id AND pr.pitch_data_id=pd.id AND pr.result_type_id=re.id AND pr.id= :id ORDER BY pd.date DESC";	
+		$pitch_q = "SELECT pr.id, de.id AS delegate_id, cy.id AS company_id, pd.date_of_pitch, de.first_name, de.last_name, de.title, co.country_code, co.id AS country_id, delc.id AS delc_conn_id, pd.id AS pitch_data_id, pt.type as ptype, re.type as retype, pr.deals, pr.price, pr.callback_date, pr.reason, cy.company_name, u.username FROM pitch_data as pd, delegates as de, delegate_connection as delc, countries as co, pitch_type as pt, result_type as re, pitch_result as pr, company as cy, users as u WHERE pd.user_id=u.id AND pd.delegate_id=delc.delegate_id AND delc.country_id=co.id AND delc.delegate_id=de.id AND delc.company_id=cy.id AND pd.pitch_type_id=pt.id AND pr.pitch_data_id=pd.id AND pr.result_type_id=re.id AND pr.id= :id ORDER BY pd.date DESC";	
 					
 		$pitch = $this->pdo->prepare($pitch_q);
 		$pitch->bindValue(':id', $pitch_num, \PDO::PARAM_INT);
@@ -367,6 +369,117 @@ public function save_call_number() {
 
 	
 }
+
+
+/*
+-------------------------------
+Goals functions
+-------------------------------
+*/	
+
+ public function get_goal_data() {
+	 $content = '';
+	 $i = 0;
+	 	$users_q = "SELECT id, username FROM users";
+		 $users = $this->pdo->prepare($users_q);
+		 $users->execute();
+		 
+				if ($users->rowCount() > 0) {
+					while($user = $users->fetch()) {
+						$data[$i][0] = $user[1]; 
+						
+						$type_q = "SELECT SUM(pr.deals) AS deals FROM pitch_result as pr, pitch_data as pd WHERE pd.user_id = :id AND pr.pitch_data_id=pd.id";
+						 $deals = $this->pdo->prepare($type_q);
+						 $deals->bindValue(':id', $user[0], \PDO::PARAM_INT);
+						 $deals->execute();
+						
+						$deal_data = $deals->fetch();
+						$data[$i][1] = $deal_data[0]; 
+					$i++;	
+					}
+				}
+				
+				
+	$content .=' <form>
+	<div id="GoalInputs">
+	   <div class="Inputs">
+	      <label>Deals
+	     <input id="DelegateGoalField" class="AdminInputField" type="text" placeholder="Delegates" value="60" /></label>
+	     <button id="DelegateGoalSubmit" class="AdminSubmitButton">Change</button>
+	   </div>	
+	    <div class="Inputs">
+		<label>GBP
+	   	<input id="GBPGoalField" class="AdminInputField" type="text" placeholder="GBP" value="9000" /></label>
+	     <button id="GBPGoalSubmit" class="AdminSubmitButton">Change</button>  
+		 </div>	
+	</div>
+	 </form>';	
+	 
+	 $summary = 0;
+	 foreach ($data as $deal) {
+		  $content .='<p>'.$deal[0].': '.$deal[1].'</p>';
+		  $summary = $summary + $deal[1];
+	 }
+	 $content .='<br /><p>All: '.$summary.'</p>';
+	 
+	 $needed = 60 - $summary;
+	 
+	 $content .='<br /><p>We Need: '.$needed.'</p>';		
+	return $content;	
+	 
+	 
+	 
+ }
+
+/*
+-------------------------------
+Goals functions
+-------------------------------
+*/	
+
+ public function get_analytics_data() {
+	 $content = '';
+	 $i = 0;
+	 	$users_q = "SELECT id, username FROM users";
+		 $users = $this->pdo->prepare($users_q);
+		 $users->execute();
+		 
+				if ($users->rowCount() > 0) {
+					while($user = $users->fetch()) {
+						$data[$i][0] = $user[1]; 
+						
+						/*
+						$type_q = "SELECT SUM(pr.deals) AS deals FROM pitch_result as pr, pitch_data as pd WHERE pd.user_id = :id AND pr.pitch_data_id=pd.id";
+						 $deals = $this->pdo->prepare($type_q);
+						 $deals->bindValue(':id', $user[0], \PDO::PARAM_INT);
+						 $deals->execute();
+						
+						$deal_data = $deals->fetch();
+						$data[$i][1] = $deal_data[0]; 
+						*/
+						
+					$i++;	
+					}
+				}
+	 /*
+	 $summary = 0;
+	 foreach ($data as $deal) {
+		  $content .='<p>'.$deal[0].': '.$deal[1].'</p>';
+		  $summary = $summary + $deal[1];
+	 }
+	 $content .='<br /><p>All: '.$summary.'</p>';
+	 
+	 $needed = 60 - $summary;
+	 
+	 $content .='<br /><p>We Need: '.$needed.'</p>';
+	 
+	 */		
+	return $content;	
+	 
+	 
+	 
+ }
+
 
 }
 ?>

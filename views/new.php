@@ -105,6 +105,7 @@ use HRNSales\main as main;
 	        $content .= $main->get_pitch_result($data['retype']);
             $content .=' 
            </select><br />
+		   <input class="AdminInputField" name="SellPrice" id="SellPrice" type="text" placeholder="Selling Price" value="'.$data['price'].'" /><br />
 		  <input class="AdminInputField" id="NumberOfDeals" name="NumberOfDeals" type="number" placeholder="Number of Deals" value="'.$data['deals'].'" /><br />
 	      <textarea class="TextAreaClass" id="Reason" name="Reason">'.$data['reason'].'</textarea><br />
            <input type="hidden" id="Edit_val" value="'.$_SESSION['edit_pitch'].'">  
@@ -159,6 +160,7 @@ use HRNSales\main as main;
 	        $content .= $main->get_pitch_result('');
             $content .=' 
            </select><br />
+		   <input class="AdminInputField" name="SellPrice" id="SellPrice" type="text" placeholder="Selling Price"/><br />
 		  <input class="AdminInputField" id="NumberOfDeals" name="NumberOfDeals" type="number" placeholder="Number of Deals" /><br />
 	      <textarea class="TextAreaClass" id="Reason" name="Reason" placeholder="Reason"></textarea><br />
 

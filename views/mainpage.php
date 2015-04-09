@@ -67,53 +67,23 @@ if (isset($_SESSION['user'])) {
 	 
 
 	
-	if (isset($_SESSION['agenda_admin'])) {
+	if (isset($_SESSION['admin'])) {
 		
-		 $content .= '<a href="agenda"><img class="MenuIcon" src="img/admin/agenda.png" onmouseover="this.src=';
-		 $content .="'img/admin/agenda_hover.png';";
+		 $content .= '<a href="goals" title="Pitch List"><img class="MenuIcon" src="img/icons/goals.png" onmouseover="this.src=';
+		 $content .="'img/icons/goals_hover.png';";
 		 $content .='" onmouseout="this.src=';
-		 $content .="'img/admin/agenda.png';";
+		 $content .="'img/icons/goals.png';";
+		 $content .='" ></a>';
+		 
+		 $content .= '<a href="analytics" title="Pitch List"><img class="MenuIcon" src="img/icons/goals.png" onmouseover="this.src=';
+		 $content .="'img/icons/goals_hover.png';";
+		 $content .='" onmouseout="this.src=';
+		 $content .="'img/icons/goals.png';";
 		 $content .='" ></a>';
 	 
 	}
 	 
-	if (isset($_SESSION['blogsquad_admin'])) {
-		
-		 $content .= '<a href="blogsquad"><img class="MenuIcon" src="img/admin/blogsquad.png" onmouseover="this.src=';
-		 $content .="'img/admin/blogsquad_hover.png';";
-		 $content .='" onmouseout="this.src=';
-		 $content .="'img/admin/blogsquad.png';";
-		 $content .='" ></a>';
-	 
-	}
-	 
-	if (isset($_SESSION['mediapartners_admin'])) {
-		
-		 $content .= '<a href="mediapartners"><img class="MenuIcon" src="img/admin/mediapartners.png" onmouseover="this.src=';
-		 $content .="'img/admin/mediapartners_hover.png';";
-		 $content .='" onmouseout="this.src=';
-		 $content .="'img/admin/mediapartners.png';";
-		 $content .='" ></a>';
-	 
-	}
 	
-		if (isset($_SESSION['developer'])) {
-		
-		 $content .= '<a href="logs"><img class="MenuIcon" src="img/admin/logs.png" onmouseover="this.src=';
-		 $content .="'img/admin/logs_hover.png';";
-		 $content .='" onmouseout="this.src=';
-		 $content .="'img/admin/logs.png';";
-		 $content .='" ></a>';
-		 
-		 
-		 $content .= '<a href="bookings"><img class="MenuIcon" src="img/admin/booking.png" onmouseover="this.src=';
-		 $content .="'img/admin/booking_hover.png';";
-		 $content .='" onmouseout="this.src=';
-		 $content .="'img/admin/booking.png';";
-		 $content .='" ></a>';
-	 
-	 
-	}
 	
   $content .='</div>';
   

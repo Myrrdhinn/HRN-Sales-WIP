@@ -27,7 +27,7 @@ use HRNSales\pitches as pitches;
 <body>
  <!--Main Wrapper-->
 	<div class="wrapper">
-	  <h1 class="WrapperMainH1">HR Tech Europe - Sales Page |<br /> Add New Pitch</h1>
+	  <h1 class="WrapperMainH1">HR Tech Europe - Sales Page |<br /> Pitch List</h1>
 	  
 	  	        <div id="MenuIconContainer">';
 	
@@ -55,6 +55,9 @@ use HRNSales\pitches as pitches;
 			$main = new main\main;
 			$pitches = new pitches\pitches;
 			
+			if(isset($_SESSION['edit_pitch'])) {
+			   unset($_SESSION['edit_pitch']);	
+			}
 			
 			if (isset($_SESSION['Result']) && $_SESSION['Result'] != '') {
 				$content .='<div id="ReturnValue" style="display:none">'.$_SESSION['Result'].'</div>';
