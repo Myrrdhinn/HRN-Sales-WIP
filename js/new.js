@@ -132,8 +132,7 @@ function save_data(mode) {
 		  	   //check if the fields are filled out or not
 			if ((typeof FirstName != "undefined") && FirstName != '' && (typeof LastName != "undefined") && LastName != '' 
 			&&  (typeof DelegateTitle != "undefined") && DelegateTitle != '' && (typeof CompanyName != "undefined") && CompanyName != '' &&
-			(typeof Country != "undefined") && Country != '' && (typeof PitchType != "undefined") && PitchType != '' && (typeof PitchResult != "undefined") && PitchResult != '' &&
-			(typeof NumberOfDeals != "undefined") && NumberOfDeals != '') {
+			(typeof Country != "undefined") && Country != '' && (typeof PitchType != "undefined") && PitchType != '' && (typeof PitchResult != "undefined") && PitchResult != '') {
 				
 
 				
@@ -215,11 +214,6 @@ function save_data(mode) {
 				}
 				
 				
-				if (typeof NumberOfDeals == "undefined" || NumberOfDeals == '') {
-					$('#NumberOfDeals').css("border","1px solid #9B1515");
-				} else {
-					$('#NumberOfDeals').css("border","1px solid #cccccc");
-				}
 
 			}	
 	

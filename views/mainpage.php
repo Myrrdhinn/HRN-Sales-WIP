@@ -38,17 +38,17 @@ if (isset($_SESSION['user'])) {
 				$content .='<div id="ReturnValue" style="display:none"></div>';
 			}		
 			
-	
+	/*
     $content .='	 	 
 	 <form>
 	   <div id="CallInputs">
 	     <input id="CallInputField" class="AdminInputField" type="text" placeholder="Call number" value="'.$calls.'" />
 	     <button id="CallSubmit" class="AdminSubmitButton">Change</button>
 	   </div>	 
-	 </form>
+	 </form>';
+	 */
 	 
-	 
-      <div id="MenuIconContainer">';
+       $content .='<div id="MenuIconContainer">';
 	  
 
 		 $content .= '<a href="new" title="New Pitch"><img class="MenuIcon" src="img/icons/new.png" onmouseover="this.src=';
