@@ -6,7 +6,7 @@ include_once('config.php');
 class pitches extends config {
 	 
 	//This is the function what collets all the sponsors to the content multi dimensional array.
-	public function list_pithces($category, $value) {
+	public function list_pithces($category, $value, $admin) {
 		$data[0][0] = '';
 		$i = 0;
 		$s = 0;
@@ -17,31 +17,29 @@ class pitches extends config {
 		                    //pitch date            Deleagate name,     Title          country   pitch type, result type, deals,   callback      reason
 		$pitch_q = "SELECT pr.id, pd.date_of_pitch, de.first_name, de.last_name, de.title, co.country_code, pt.type as ptype, re.type as retype, pr.deals, pr.price, pr.callback_date, pr.reason, cy.company_name, u.username FROM pitch_data as pd, delegates as de, delegate_connection as delc, countries as co, pitch_type as pt, result_type as re, pitch_result as pr, company as cy, users as u WHERE pd.user_id=u.id AND pd.delegate_id=delc.delegate_id AND delc.country_id=co.id AND delc.delegate_id=de.id AND delc.company_id=cy.id AND pd.pitch_type_id=pt.id AND pr.pitch_data_id=pd.id AND pr.result_type_id=re.id";	
 	
-		//test
-    if (isset($category[0]) && isset($value[0])) {
-		foreach ($category as $cat) {
-			$plus_q .= ' AND ';
-			$plus_q .='(';
-			
-			foreach ($value[$s] as $val) {
-			  $plus_q .= $cat.'='.$val;	
-			  $plus_q .= ' OR ';
-			}
-			
-			$plus_q = substr($plus_q,0,-4);
-			$plus_q .= ')';
-			$s++;
-		}
+
+	
+	if ($admin > 0) {
+		$plus_q .= ' AND u.id= :id';
+		$pitch_q .=	$plus_q;
 	}
 	
-		
-	//$plus_q = " AND (u.id=1 OR u.id=2)";	
-	$pitch_q .=	$plus_q;
+	 //ideiglenesen csak callback datere csinálok szűrőt
+	if(isset($category) && $category != '') {
+		$plus_q .= ' AND pr.callback_date= :callback';
+		$pitch_q .=	$plus_q;
+	}
 				
-	//$pitch_q .= " ORDER BY pd.date DESC";
+	$pitch_q .= " ORDER BY pd.date DESC";
 	
 		$pitch = $this->pdo->prepare($pitch_q);
-		//$stat->bindValue(':category', $category, \PDO::PARAM_INT);
+		if ($admin > 0) {
+			$pitch->bindValue(':id', $admin, \PDO::PARAM_INT);
+		}
+		if(isset($value) && $value != '') {
+			$pitch->bindValue(':callback', $value, \PDO::PARAM_STR);
+		}
+		
 		$pitch->execute();
 
 			if ($pitch->rowCount() > 0) {

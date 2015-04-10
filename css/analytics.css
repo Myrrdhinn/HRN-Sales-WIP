@@ -7,9 +7,98 @@
   display: inline-block;
 }
 
-.TotalPitchNum, .TotalDealNum, .TotalPrice {
+.TotalContainer {
+	cursor:pointer;
+	background-color: rgba(34, 116, 116, 0.11);
+	padding: 0.5vw;
+	
+}
+
+.TotalPitchNum, .TotalDealNum, .TotalPrice, .TotalPaid, .TotalVIP {
     margin: 0 10px;
 	display: inline-block;
+	min-width: 3vw;
+}
+
+/*Headers*/
+
+#AllHeader {
+	border-bottom:#000000 solid 1px;
+	font-weight:600;
+}
+
+.NameHeader, .PitchHeader, .DealHeader, .EarnedHeader, .PaidHeader, .VIPHeader{
+	display: inline-block;
+}
+
+
+.PitchHeader {
+	margin: 0 0 0 8vw;
+}
+
+.DealHeader {
+	margin: 0 0 0 1vw;
+}
+
+.EarnedHeader {
+	margin: 0 0 0 1.3vw;
+}
+
+.PaidHeader {
+	margin: 0 0 0 1.2vw;
+}
+
+.VIPHeader {
+	margin: 0 0 0 2vw;
+}
+
+@media (max-width: 1700px){
+.PitchHeader {
+	margin: 0 0 0 6vw;
+}	
+}
+
+
+@media (max-width: 1500px){
+.PitchHeader {
+	margin: 0 0 0 4vw;
+}	
+}
+
+@media (max-width: 1360px){
+
+.PitchHeader {
+	margin: 0 0 0 4vw;
+}
+
+.DealHeader {
+	margin: 0 0 0 1vw;
+}
+
+.EarnedHeader {
+	margin: 0 0 0 1vw;
+}
+
+.PaidHeader {
+	margin: 0 0 0 0.8vw;
+}
+
+.VIPHeader {
+	margin: 0 0 0 1.6vw;
+}
+}
+
+@media (max-width: 1250px){
+.PitchHeader {
+	margin: 0 0 0 2vw;
+}
+}
+/*Headers End*/
+
+
+.Dates {
+	display:none;
+	
 }
 
 .Dates li {
@@ -17,16 +106,79 @@
 	
 }
 
+.PitchDate {
+	width: 11vw;
+}
+
 .Dates li div {
 	display: inline-block;
+	  min-width: 3.7vw;
 	
 }
 
-.PitchDate {
-	min-width: 11vw;
+
+#AllTotal {
+margin-top: 3vw;
+  background-color: rgba(11, 152, 178, 0.92);
+  font-weight: 600;
+  
+  color: #FFF;
+	
 }
 
-.PitchNum, .DealNum {
+.UserContainer {
+  
+  margin-top: 1vw;
+  padding: 0.2vw;
+  max-width: 40vw;
+	
+}
+@media (max-width: 1250px){
+.UserContainer {
+  
+
+  max-width: 45vw;
+	
+}
+}
+
+.PitchNum {
+	  margin: 5px 0 5px 1.6vw;	
+}
+
+.DealNum {
 	margin:5px 10px;
+	
+}
+
+.Paid {
+  margin: 0 0 0 0.40vw;	
+}
+
+.VIP {
+  margin: 0 0 0 0.5vw;	
+}
+
+#FilterContainer {
+	margin: 3vw auto;
+	
+}
+
+.SelectClass {
+	max-width:9vw;	
+}
+
+@media (max-width: 600px){
+ .SelectClass {
+	max-width:100%;
+	min-height: 5.5vw;	
+}
+	
+}
+
+@media (max-width: 450px){
+ .SelectClass {
+	min-height: 8vw;	
+}
 	
 }

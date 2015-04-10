@@ -437,8 +437,35 @@ Goals functions
 -------------------------------
 */	
 
- public function get_analytics_data($cat, $val) {
+ public function get_analytics_data($date, $country, $industry) {
 	 $content = '';
+	  $all_pitch_num = 0;
+	  $all_deal_num = 0;
+	  $all_list_data = '';
+	  $all_total_price = 0;
+	  $all_total_paid = 0;
+	  $all_total_VIP = 0;
+	  
+	  					$content .= '
+							  <!--The main wrapper -->
+							  <div id="AnalyticsWrapper">
+								 
+							  <!-- User container-->
+								  <div id="AllHeader" class="UserContainer">
+								    <div >
+									  <div class="NameHeader">Team member</div>
+									  <div class="PitchHeader">Pitch no.</div>
+									  <div class="DealHeader">Deal no.</div>
+									  <div class="EarnedHeader">Earned</div>
+									  <div class="PaidHeader">Paid</div>
+									  <div class="VIPHeader">VIP</div>
+									 </div> 								
+								  </div>							 
+								</div>
+									 ';	
+	  
+	  
+	  
 	 
 	 	$users_q = "SELECT id, username FROM users";
 		 $users = $this->pdo->prepare($users_q);
@@ -454,68 +481,88 @@ Goals functions
 							$plus_q = '';
 							$s = 0;
 							
-							
 							//Get basic date about a sponsors
 											   //pitch
-							$pitch_q = "SELECT COUNT(pd.id) as pitches, SUM(pr.deals) as deals, SUM(pr.price) as price, pd.date_of_pitch FROM users as u, pitch_data as pd, pitch_result as pr WHERE u.id= :id AND u.id=pd.user_id AND pr.pitch_data_id=pd.id";	
+							$pitch_q = "SELECT COUNT(pd.id) as pitches, SUM(pr.deals) as deals, SUM(pr.price) as price, pd.date_of_pitch, (SELECT COUNT(prt.result_type_id) FROM pitch_result as prt, pitch_data as pdt WHERE prt.result_type_id=3 AND pdt.user_id=u.id AND pdt.id=prt.pitch_data_id AND pdt.date_of_pitch=pd.date_of_pitch) as Paid, (SELECT COUNT(prt.result_type_id) FROM pitch_result as prt, pitch_data as pdt WHERE prt.result_type_id=4 AND pdt.user_id=u.id AND pdt.id=prt.pitch_data_id AND pdt.date_of_pitch=pd.date_of_pitch) as VIP FROM users as u, pitch_data as pd, pitch_result as pr, countries as co, delegate_connection as delc WHERE u.id= :id AND u.id=pd.user_id AND pr.pitch_data_id=pd.id AND pd.delegate_id=delc.delegate_id AND delc.country_id=co.id";	
+					        //if we (nem jut eszembe, szóval) dátum alapján szűrünk .. oh.. filter.. damn
+							//-----------------------------------------
+ 					    if (isset($date) && $date != '' && $date != 'All') {
+							$plus_q = ' AND pd.date_of_pitch LIKE :pitch';
+						
+						     $pitch_q .= $plus_q;
 					
-					    if (isset($cat[0]) && isset($val[0])) {
-							  foreach ($category as $cat) {
-								  $plus_q .= ' AND ';
-								  $plus_q .='(';
-								  
-								  foreach ($value[$s] as $val) {
-									$plus_q .= $cat.'='.$val;	
-									$plus_q .= ' OR ';
-								  }
-								  
-								  $plus_q = substr($plus_q,0,-4);
-								  $plus_q .= ')';
-								  $s++;
-							  }
 						  }
 						  
-							  
-						  //$plus_q = " AND (u.id=1 OR u.id=2)";	
-						  $pitch_q .=	$plus_q;
-					
+						  
+						  //if we filter (;)) based on country
+						  //-------------------------------
+						  if (isset($country) && $country != -1 && $country != '') {
+							 $plus_q = ' AND co.id= :country';
 						
+						     $pitch_q .= $plus_q;
+							  
+						  }
+						  
 						$pitch_q .=' GROUP BY pd.date_of_pitch ORDER BY pd.date';
 						
 					
 						
 							$pitch = $this->pdo->prepare($pitch_q);
 							$pitch->bindValue(':id', $user[0], \PDO::PARAM_INT);
-							$pitch->execute();
 							
+
+							 if (isset($date) && $date != ''  && $date != 'All') {
+							   $pitch->bindValue(':pitch', $date, \PDO::PARAM_STR);
+							 }
+							 
+							 if (isset($country) && $country != -1 && $country != '') {
+							   $pitch->bindValue(':country', $country, \PDO::PARAM_INT);
+							 }
+							
+							 
+							 $pitch->execute();
+							 
 							$pitch_num = 0;
 							$deal_num = 0;
 							$list_data = '';
 							$total_price = 0;
+						    $total_paid = 0;
+							$total_VIP = 0;
 					
-								if ($pitch->rowCount() > 0) {
+										if ($pitch->rowCount() > 0) {
 										while($pitches = $pitch->fetch()){
 											$data[$i][0] = $pitches['date_of_pitch'];
 											$data[$i][1] = $pitches['pitches'];
 											$data[$i][2] = $pitches['deals'];
 											$data[$i][3] = $pitches['price'];
+											$data[$i][4] = $pitches['Paid'];
+											$data[$i][3] = $pitches['VIP'];
 											
 											$list_data .='<li>
 											<div class="PitchDate">'.$pitches['date_of_pitch'].'</div> 
 											<div class="PitchNum">'.$pitches['pitches'].'</div>
 											<div class="DealNum">'.$pitches['deals'].'</div>
 											<div class="Price">'.$pitches['price'].'</div>
+											<div class="Paid">'.$pitches['Paid'].'</div>
+											<div class="VIP">'.$pitches['VIP'].'</div>
 										 </li>';
 											
 											$pitch_num += $pitches['pitches'];
 										    $deal_num += $pitches['deals'];
 											$total_price += $pitches['price'];
+											$total_paid += $pitches['Paid'];
+											$total_VIP += $pitches['VIP'];
 
 											$i++;
 										} //stat_q fetch
 								}  //stat num row end
 								
 							
+											$all_pitch_num += $pitch_num;
+										    $all_deal_num += $deal_num;
+											$all_total_price += $total_price;
+											$all_total_paid += $total_paid;
+											$all_total_VIP += $total_VIP;
 							
 					
 								 $content .= '
@@ -523,11 +570,15 @@ Goals functions
 							  <div id="AnalyticsWrapper">
 								 
 							  <!-- User container-->
-								  <div class="UserContainer">
-									<div class="UserName">'.$user[1].'</div>
+								  <div class="UserContainer" onClick="container_display(this);">
+								    <div class="TotalContainer">
+									  <div class="UserName">'.$user[1].'</div>
 									  <div class="TotalPitchNum">'.$pitch_num.'</div>
 									  <div class="TotalDealNum">'.$deal_num.'</div>
 									  <div class="TotalPrice">'.$total_price.'</div>
+									  <div class="TotalPaid">'.$total_paid.'</div>
+									  <div class="TotalVIP">'.$total_VIP.'</div>
+									 </div> 
 									  <ul class="Dates">
 									  '.$list_data.'
 
@@ -549,6 +600,23 @@ Goals functions
 					}
 				}
 				
+							$content .= '
+							  <!--The main wrapper -->
+							  <div id="AnalyticsWrapper">
+								 
+							  <!-- User container-->
+								  <div id="AllTotal" class="UserContainer">
+								    <div class="TotalContainer">
+									  <div class="UserName">Total</div>
+									  <div class="TotalPitchNum">'.$all_pitch_num.'</div>
+									  <div class="TotalDealNum">'.$all_deal_num.'</div>
+									  <div class="TotalPrice">'.$all_total_price.'</div>
+									  <div class="TotalPaid">'.$all_total_paid.'</div>
+									  <div class="TotalVIP">'.$all_total_VIP.'</div>
+									 </div> 								
+								  </div>							 
+								</div>
+									 ';		
 				 
 				 
 
@@ -558,7 +626,220 @@ Goals functions
 	 
 	 
  }
+ 
+ 
+  public function get_analytics_data_intervall($date, $country, $industry) {
+	 $content = '';
+	 $year = date('Y');
+	  $all_pitch_num = 0;
+	  $all_deal_num = 0;
+	  $all_list_data = '';
+	  $all_total_price = 0;
+	  $all_total_paid = 0;
+	  $all_total_VIP = 0;
+	 
+	 	$users_q = "SELECT id, username FROM users";
+		 $users = $this->pdo->prepare($users_q);
+		 $users->execute();
+		 
+				if ($users->rowCount() > 0) {
+					while($user = $users->fetch()) {
+							
+							$datestuff = explode(',',$date);
+							if (isset($datestuff[1]) && isset($datestuff[2])){
+								$days = explode('-', $datestuff[1]);
+								
+								$first = $year.'-'.$datestuff[2].'-'.$days[0];
+								$last = $year.'-'.$datestuff[2].'-'.$days[1];
 
+						
+							$data[0][0] = '';
+					
+							$i = 0;
+							$plus_q = '';
+							$s = 0;
+							
+							
+							//Get basic date about a sponsors
+											   //pitch
+							$pitch_q = "SELECT COUNT(pd.id) as pitches, SUM(pr.deals) as deals, SUM(pr.price) as price, pd.date_of_pitch, (SELECT COUNT(prt.result_type_id) FROM pitch_result as prt, pitch_data as pdt WHERE prt.result_type_id=3 AND pdt.user_id=u.id AND pdt.id=prt.pitch_data_id AND pdt.date_of_pitch=pd.date_of_pitch) as Paid, (SELECT COUNT(prt.result_type_id) FROM pitch_result as prt, pitch_data as pdt WHERE prt.result_type_id=4 AND pdt.user_id=u.id AND pdt.id=prt.pitch_data_id AND pdt.date_of_pitch=pd.date_of_pitch) as VIP FROM users as u, pitch_data as pd, pitch_result as pr, countries as co, delegate_connection as delc WHERE u.id= :id AND u.id=pd.user_id AND pr.pitch_data_id=pd.id AND pd.delegate_id=delc.delegate_id AND delc.country_id=co.id AND pd.date BETWEEN :start AND :end";	
+							
+							 //if we filter (;)) based on country
+						  //-------------------------------
+						  if (isset($country) && $country != -1 && $country != '') {
+							 $plus_q = ' AND co.id= :country';
+						
+						     $pitch_q .= $plus_q;
+							  
+						  }
+					
+
+						$pitch_q .=' GROUP BY pd.date_of_pitch ORDER BY pd.date';
+						
+					//echo $pitch_q;
+						
+							$pitch = $this->pdo->prepare($pitch_q);
+							$pitch->bindValue(':id', $user[0], \PDO::PARAM_INT);
+							$pitch->bindValue(':start', $first, \PDO::PARAM_STR);
+							$pitch->bindValue(':end', $last, \PDO::PARAM_STR);
+							 if (isset($country) && $country != -1 && $country != '') {
+							   $pitch->bindValue(':country', $country, \PDO::PARAM_INT);
+							 }
+							
+
+							 $pitch->execute();
+							 
+							$pitch_num = 0;
+							$deal_num = 0;
+							$list_data = '';
+							$total_price = 0;
+							$total_paid = 0;
+							$total_VIP = 0;
+					
+								if ($pitch->rowCount() > 0) {
+										while($pitches = $pitch->fetch()){
+											$data[$i][0] = $pitches['date_of_pitch'];
+											$data[$i][1] = $pitches['pitches'];
+											$data[$i][2] = $pitches['deals'];
+											$data[$i][3] = $pitches['price'];
+											$data[$i][4] = $pitches['Paid'];
+											$data[$i][3] = $pitches['VIP'];
+											
+											$list_data .='<li>
+											<div class="PitchDate">'.$pitches['date_of_pitch'].'</div> 
+											<div class="PitchNum">'.$pitches['pitches'].'</div>
+											<div class="DealNum">'.$pitches['deals'].'</div>
+											<div class="Price">'.$pitches['price'].'</div>
+											<div class="Paid">'.$pitches['Paid'].'</div>
+											<div class="VIP">'.$pitches['VIP'].'</div>
+										 </li>';
+											
+											$pitch_num += $pitches['pitches'];
+										    $deal_num += $pitches['deals'];
+											$total_price += $pitches['price'];
+											$total_paid += $pitches['Paid'];
+											$total_VIP += $pitches['VIP'];
+											
+
+
+											$i++;
+										} //stat_q fetch
+								}  //stat num row end
+								
+										    $all_pitch_num += $pitch_num;
+										    $all_deal_num += $deal_num;
+											$all_total_price += $total_price;
+											$all_total_paid += $total_paid;
+											$all_total_VIP += $total_VIP;
+							
+					
+								 $content .= '
+							  <!--The main wrapper -->
+							  <div id="AnalyticsWrapper">
+								 
+							  <!-- User container-->
+								  <div class="UserContainer" onClick="container_display(this);">
+								    <div class="TotalContainer">
+									  <div class="UserName">'.$user[1].'</div>
+									  <div class="TotalPitchNum">'.$pitch_num.'</div>
+									  <div class="TotalDealNum">'.$deal_num.'</div>
+									  <div class="TotalPrice">'.$total_price.'</div>
+									  <div class="TotalPaid">'.$total_paid.'</div>
+									  <div class="TotalVIP">'.$total_VIP.'</div>
+									 </div> 
+									  <ul class="Dates">
+									  '.$list_data.'
+
+									 </ul>
+								
+								  </div>							 
+								</div>
+									 ';	
+							
+							
+								
+							}
+
+					 
+						
+
+						
+					
+					}
+				}
+				
+											 $content .= '
+							  <!--The main wrapper -->
+							  <div id="AnalyticsWrapper">
+								 
+							  <!-- User container-->
+								  <div id="AllTotal" class="UserContainer">
+								    <div class="TotalContainer">
+									  <div class="UserName">Total</div>
+									  <div class="TotalPitchNum">'.$all_pitch_num.'</div>
+									  <div class="TotalDealNum">'.$all_deal_num.'</div>
+									  <div class="TotalPrice">'.$all_total_price.'</div>
+									  <div class="TotalPaid">'.$all_total_paid.'</div>
+									  <div class="TotalVIP">'.$all_total_VIP.'</div>
+									 </div> 								
+								  </div>							 
+								</div>
+									 ';		 
+				 
+
+
+	return $content;	
+	 
+	 
+	 
+ }
+
+public function get_callbacks($admin) {
+	
+	$content = '';
+	$selected = '';
+	
+	  $content = '<option value="" hidden="hidden" selected="selected">Select a Call Back Date</option>'; 
+       $content .= '<option value="All">All</option>'; 
+	 
+		 $country_q = "SELECT pr.callback_date FROM pitch_result as pr, pitch_data as pd WHERE pd.id=pr.pitch_data_id";
+		 if ($admin > 0) {
+			 $country_q .= " AND pd.user_id= :id";
+		 }
+		 
+		 $country_q .= " GROUP BY callback_date";
+		 
+		 $countries = $this->pdo->prepare($country_q);
+		  if ($admin > 0) {
+			 $countries->bindValue(':id', $admin, \PDO::PARAM_INT);
+		 }
+		 $countries->execute();
+		 
+					if ($countries->rowCount() > 0) {
+					while($country = $countries->fetch()){
+						
+	                          if ($country['callback_date'] != '') {
+								   $content .= '<option value="'.$country['callback_date'].'">'.$country['callback_date'].'</option>';
+							  }
+
+                        
+						 
+
+					} //personal fetch assoc end
+				}  //personal num rows if end
+				
+        /* $content .= '<option value="Other">Other</option>';*/
+	return $content;	
+}
+
+
+
+public function get_analytics_filters() {
+	//displays the day of a specific date (now is set to today)
+//echo jddayofweek ( cal_to_jd(CAL_GREGORIAN, date("m"),date("d"), date("Y")) , 0 ); 
+
+	
+}
 
 }
 ?>

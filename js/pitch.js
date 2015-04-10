@@ -35,16 +35,41 @@
 					});
 
 				}//call_num != undefined 
-			  
-
-		  
-		  
-
-				
-				
-				
 	
   })  
+  
+  	   $('#Callbacks').bind('change', function (e) {
+		  
+		  var callback = $(this).val();
+		  
+		  if (typeof callback != 'undefined') {
+			  if (callback == 'All') {
+				    var data = 'All'; 
+			  } else {
+				  data = callback;
+			  }
+			
+			  
+			  		$.ajax({
+						url: 'controllers/ajax.php',
+						type: 'POST',
+						data: {action:'pitches_callback_filter', data:data},
+						success: function(data) {
+							
+							if (data != '' && typeof data != 'undefined'){
+                                 $('#Pitch_Container').html(data);
+								 
+							}
+							
+						}
+					});
+					
+			  
+			  
+		  }
+	
+     })  
+  
 	   
 	   
       });

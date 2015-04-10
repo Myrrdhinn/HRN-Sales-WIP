@@ -66,9 +66,21 @@ use HRNSales\pitches as pitches;
 				$content .='<div id="ReturnValue" style="display:none"></div>';
 			}
    
-   	    $content .='<div id="Advanced">';
-		//$content .= $pitches->list_pithces($category,$value);
-        $content .='</div>';
+				if (isset($_SESSION['admin'])) {
+				  $admin = -200;	
+				}
+				else {
+					$admin = $_SESSION['user_id'];
+				}
+   
+   	    $content .='<div id="Advanced">
+		  <select id="Callbacks" class="SelectClass">
+		';
+		
+		$content .= $main->get_callbacks($admin);
+        $content .='
+		  </select>
+		</div>';
          
 		 $category = ''; 
 		 $value = ''; 
@@ -83,10 +95,11 @@ use HRNSales\pitches as pitches;
 		$value[1][0] = 14;
 		
 		*/
+
 			 
 			 //Get the pitch data
 	    $content .='<div id="Pitch_Container">';
-		$content .= $pitches->list_pithces($category,$value);
+		$content .= $pitches->list_pithces($category,$value, $admin);
         $content .='</div>';
 	    
 	   

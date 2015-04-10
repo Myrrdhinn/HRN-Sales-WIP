@@ -68,17 +68,18 @@ if (isset($_SESSION['user'])) {
 
 	
 	if (isset($_SESSION['admin'])) {
-		
-		 $content .= '<a href="goals" title="Pitch List"><img class="MenuIcon" src="img/icons/goals.png" onmouseover="this.src=';
+		/*
+		 $content .= '<a href="goals" title="Goals"><img class="MenuIcon" src="img/icons/goals.png" onmouseover="this.src=';
 		 $content .="'img/icons/goals_hover.png';";
 		 $content .='" onmouseout="this.src=';
 		 $content .="'img/icons/goals.png';";
 		 $content .='" ></a>';
+		 */
 		 
-		 $content .= '<a href="analytics" title="Pitch List"><img class="MenuIcon" src="img/icons/goals.png" onmouseover="this.src=';
-		 $content .="'img/icons/goals_hover.png';";
+		 $content .= '<a href="analytics" title="Analytics"><img class="MenuIcon" src="img/icons/analytics.png" onmouseover="this.src=';
+		 $content .="'img/icons/analytics_hover.png';";
 		 $content .='" onmouseout="this.src=';
-		 $content .="'img/icons/goals.png';";
+		 $content .="'img/icons/analytics.png';";
 		 $content .='" ></a>';
 	 
 	}
