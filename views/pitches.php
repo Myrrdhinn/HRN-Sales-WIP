@@ -79,8 +79,19 @@ use HRNSales\pitches as pitches;
 		
 		$content .= $main->get_callbacks($admin);
         $content .='
-		  </select>
-		</div>';
+		  </select>';
+		  
+		  if (isset($_SESSION['admin'])) {
+		$content .='
+		<select id="TeamMembers" class="SelectClass">';
+		  
+		
+		$content .= $main->get_team_members();
+        $content .='
+		  </select>';
+		  }
+		  
+		 $content .='</div>';
          
 		 $category = ''; 
 		 $value = ''; 

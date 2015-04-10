@@ -101,17 +101,17 @@ Date filter Intervall
 
 
 /*///////////// 
-Pitches Call Back Filter
+Pitches Filter
 ///////////////*/
 
 
- if(isset($_POST['action']) && $_POST['action'] == 'pitches_callback_filter'){
+ if(isset($_POST['action']) && $_POST['action'] == 'pitches_filter'){
 	$pitch = new pitches\pitches;
 	if($_POST['data'] == 'All' || $_POST['data'] == '') {
 		$category = '';
 	    $value = '';
 	} else {
-		$category = 'pr.callback_date';
+		$category = $_POST['category'];
 	    $value = $_POST['data'];
 	}
 	

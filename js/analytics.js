@@ -391,8 +391,7 @@ var days = daysInMonth(n,year); //days on this month
 				   
 				  
 			        var data = 'intervall,'+weeks+','+month; 
-					console.log(data);
-					console.log(country);
+
 					
 					$.ajax({
 						url: 'controllers/ajax.php',

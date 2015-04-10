@@ -841,5 +841,41 @@ public function get_analytics_filters() {
 	
 }
 
+
+public function get_team_members() {
+	
+	$content = '';
+	$selected = '';
+	
+	  $content = '<option value="" hidden="hidden" selected="selected">Select a Call Back Date</option>'; 
+       $content .= '<option value="All">All</option>'; 
+	 
+		 $country_q = "SELECT id, username FROM users";
+
+		 
+		 $countries = $this->pdo->prepare($country_q);
+
+		 $countries->execute();
+		 
+					if ($countries->rowCount() > 0) {
+					while($country = $countries->fetch()){
+						
+	                          if ($country['username'] != '') {
+								   $content .= '<option value="'.$country['id'].'">'.$country['username'].'</option>';
+							  }
+
+                        
+						 
+
+					} //personal fetch assoc end
+				}  //personal num rows if end
+				
+        /* $content .= '<option value="Other">Other</option>';*/
+	return $content;	
+}
+
+
+
+
 }
 ?>

@@ -42,18 +42,69 @@
 		  
 		  var callback = $(this).val();
 		  
+		  var team = $('#TeamMembers').val();
+		  
 		  if (typeof callback != 'undefined') {
 			  if (callback == 'All') {
 				    var data = 'All'; 
 			  } else {
-				  data = callback;
+				  
+				  if (typeof team !='undefined' && team != '' && team !=-1 && team !='All'){
+					  category = 'user,callback';
+					  data = team+','+callback;
+				  } else {
+					 category = 'callback'
+					 data = callback; 
+				  }
+				  
 			  }
 			
 			  
 			  		$.ajax({
 						url: 'controllers/ajax.php',
 						type: 'POST',
-						data: {action:'pitches_callback_filter', data:data},
+						data: {action:'pitches_filter', data:data, category:category},
+						success: function(data) {
+							
+							if (data != '' && typeof data != 'undefined'){
+                                 $('#Pitch_Container').html(data);
+								 
+							}
+							
+						}
+					});
+					
+			  
+			  
+		  }
+	
+     })  
+	 
+	 
+	   	$('#TeamMembers').bind('change', function (e) {
+		  
+		  var team = $(this).val();
+		  var callback = $('#Callbacks').val();
+		  
+		  if (typeof team != 'undefined') {
+			  if (team == 'All') {
+				    var data = 'All'; 
+			  } else {
+				   if (typeof callback !='undefined' && callback != '' && callback !=-1 && callback !='All'){
+					  category = 'user,callback';
+					  data = team+','+callback;
+				  } else {
+					 category = 'user'
+					 data = team; 
+				  }
+				  
+			  }
+			
+			  
+			  		$.ajax({
+						url: 'controllers/ajax.php',
+						type: 'POST',
+						data: {action:'pitches_filter', data:data, category:category},
 						success: function(data) {
 							
 							if (data != '' && typeof data != 'undefined'){

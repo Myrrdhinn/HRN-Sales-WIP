@@ -26,9 +26,33 @@ class pitches extends config {
 	
 	 //ideiglenesen csak callback datere csinálok szűrőt
 	if(isset($category) && $category != '') {
-		$plus_q .= ' AND pr.callback_date= :callback';
-		$pitch_q .=	$plus_q;
-	}
+		$cats = explode(',',$category);
+		$val = explode(',',$value);
+		$cat_val = 0;
+
+		foreach ($cats as $cat) {
+			
+			if ($cat == 'user') {
+			    $plus_q .= ' AND u.id= :user_id';
+				$data_user_id = $val[$cat_val];
+				$pitch_q .=	$plus_q;
+				$cat_val++;
+			}
+			
+			if ($cat == 'callback'){
+				
+				$plus_q .= ' AND pr.callback_date= :callback';
+				$data_callback = $val[$cat_val];
+				$pitch_q .=	$plus_q;
+				$cat_val++;
+				
+			}
+			
+			
+		}//foreach ends
+		
+		
+	}//if isset category
 				
 	$pitch_q .= " ORDER BY pd.date DESC";
 	
@@ -36,8 +60,11 @@ class pitches extends config {
 		if ($admin > 0) {
 			$pitch->bindValue(':id', $admin, \PDO::PARAM_INT);
 		}
-		if(isset($value) && $value != '') {
-			$pitch->bindValue(':callback', $value, \PDO::PARAM_STR);
+		if(isset($data_callback) && $data_callback != '') {
+			$pitch->bindValue(':callback', $data_callback, \PDO::PARAM_STR);
+		}
+	    if(isset($data_user_id) && $data_user_id != '') {
+			$pitch->bindValue(':user_id', $data_user_id, \PDO::PARAM_INT);
 		}
 		
 		$pitch->execute();
