@@ -150,5 +150,19 @@ Filter the Team Member select box
 
 }// save Pitch data
 
+/*///////////// 
+Callrate user filter
+///////////////*/
+
+
+ if(isset($_POST['action']) && $_POST['action'] == 'callrate_user_filter'){
+	$the_main = new main\main;
+
+    $result = $the_main->list_calls($_POST['team']);
+	if (isset($result)) {
+      echo $result;	
+	}
+
+}// save Pitch data
 
 ?>

@@ -949,7 +949,15 @@ public function list_calls($user) {
 	$content .= '<div id="CallsContainer">';
 	
 		$users_q = "SELECT id, username FROM users";
+		if (isset($user) && $user != '' && $user != 'All') {
+			$users_q .= " WHERE id= :id";
+		}
+		
 		 $users = $this->pdo->prepare($users_q);
+		 if (isset($user) && $user != '' && $user != 'All') {
+			 $users->bindValue(':id', $user, \PDO::PARAM_INT);
+		}
+		 
 		 $users->execute();
 		 
 				if ($users->rowCount() > 0) {
@@ -968,17 +976,6 @@ public function list_calls($user) {
 								 <div>Deals</div>
 							        </li>';
 									
-								/*
-								Beta:
-								all:
-SELECT uc.calls as Calls, SUM(pr.deals) as Deals, COUNT(pd.id) as Pitches, pd.date_of_pitch as Date FROM user_calls as uc, pitch_result as pr, pitch_data as pd WHERE pd.user_id=1 AND pd.user_id=uc.user_id AND pr.pitch_data_id=pd.id AND DATE(pd.date)=DATE(uc.date) GROUP BY uc.call_date ORDER BY uc.date DESC
-
-SELECT DATE(date) as Date FROM user_calls GROUP BY DATE(date) ORDER BY date DESC
-
-                                  by date:
-SELECT uc.calls as Calls, SUM(pr.deals) as Deals, COUNT(pd.id) as Pitches, pd.date_of_pitch as Date FROM user_calls as uc, pitch_result as pr, pitch_data as pd WHERE pd.user_id=1 AND pd.user_id=uc.user_id AND pr.pitch_data_id=pd.id AND DATE(pd.date)=DATE(uc.date) AND DATE(pd.date)='2015-04-14' GROUP BY uc.call_date ORDER BY uc.date DESC
-								*/
-								
 								
 		   $dates_q = "SELECT DATE(uc.date) as Date, pd.date_of_pitch FROM user_calls as uc, pitch_data as pd WHERE DATE(uc.date)=DATE(pd.date) GROUP BY DATE(uc.date) ORDER BY uc.date DESC";
 		   $dates = $this->pdo->prepare($dates_q);
@@ -992,7 +989,7 @@ SELECT uc.calls as Calls, SUM(pr.deals) as Deals, COUNT(pd.id) as Pitches, pd.da
 						 
 						 $data = $this->pdo->prepare($data_q);
 						 $data->bindValue(':user_id', $user['id'], \PDO::PARAM_INT);
-						 $data->bindValue(':date', $date['Date'], \PDO::PARAM_INT);
+						 $data->bindValue(':date', $date['Date'], \PDO::PARAM_STR);
 						 $data->execute();
 						 	
 							if ($data->rowCount() > 0) {
@@ -1014,7 +1011,7 @@ SELECT uc.calls as Calls, SUM(pr.deals) as Deals, COUNT(pd.id) as Pitches, pd.da
 								 
 								 $calls = $this->pdo->prepare($calls_q);
 								 $calls->bindValue(':user_id', $user['id'], \PDO::PARAM_INT);
-								 $calls->bindValue(':date', $date['Date'], \PDO::PARAM_INT);
+								 $calls->bindValue(':date', $date['Date'], \PDO::PARAM_STR);
 								 $calls->execute();
 								 
 								  if ($calls->rowCount() > 0) {
@@ -1046,25 +1043,6 @@ SELECT uc.calls as Calls, SUM(pr.deals) as Deals, COUNT(pd.id) as Pitches, pd.da
 									
 				}//if num row dates
 								
-								
-								
-								/*
-									
-						      $content .='<li>
-							     <div class="DateLi">10 April 2015</div>
-								 <div>50</div>
-								 <div>4</div>
-								 <div>2</div>
-							        </li>';
-									
-					           $content .='<li>
-							     <div class="DateLi">3 May 2015</div>
-								 <div>40</div>
-								 <div>3</div>
-								 <div>1</div>
-							        </li>';
-									
-									*/
 									
 									
 						    $content .='</ul>';
