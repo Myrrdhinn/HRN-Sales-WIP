@@ -968,6 +968,87 @@ public function list_calls($user) {
 								 <div>Deals</div>
 							        </li>';
 									
+								/*
+								Beta:
+								all:
+SELECT uc.calls as Calls, SUM(pr.deals) as Deals, COUNT(pd.id) as Pitches, pd.date_of_pitch as Date FROM user_calls as uc, pitch_result as pr, pitch_data as pd WHERE pd.user_id=1 AND pd.user_id=uc.user_id AND pr.pitch_data_id=pd.id AND DATE(pd.date)=DATE(uc.date) GROUP BY uc.call_date ORDER BY uc.date DESC
+
+SELECT DATE(date) as Date FROM user_calls GROUP BY DATE(date) ORDER BY date DESC
+
+                                  by date:
+SELECT uc.calls as Calls, SUM(pr.deals) as Deals, COUNT(pd.id) as Pitches, pd.date_of_pitch as Date FROM user_calls as uc, pitch_result as pr, pitch_data as pd WHERE pd.user_id=1 AND pd.user_id=uc.user_id AND pr.pitch_data_id=pd.id AND DATE(pd.date)=DATE(uc.date) AND DATE(pd.date)='2015-04-14' GROUP BY uc.call_date ORDER BY uc.date DESC
+								*/
+								
+								
+		   $dates_q = "SELECT DATE(uc.date) as Date, pd.date_of_pitch FROM user_calls as uc, pitch_data as pd WHERE DATE(uc.date)=DATE(pd.date) GROUP BY DATE(uc.date) ORDER BY uc.date DESC";
+		   $dates = $this->pdo->prepare($dates_q);
+		   $dates->execute();
+								
+				if ($dates->rowCount() > 0) {
+					
+					while($date = $dates->fetch()) {
+						
+						 $data_q = "SELECT uc.calls as Calls, SUM(pr.deals) as Deals, COUNT(pd.id) as Pitches, pd.date_of_pitch as Date FROM user_calls as uc, pitch_result as pr, pitch_data as pd WHERE pd.user_id= :user_id AND pd.user_id=uc.user_id AND pr.pitch_data_id=pd.id AND DATE(pd.date)=DATE(uc.date) AND DATE(pd.date)= :date GROUP BY uc.call_date ORDER BY uc.date DESC";
+						 
+						 $data = $this->pdo->prepare($data_q);
+						 $data->bindValue(':user_id', $user['id'], \PDO::PARAM_INT);
+						 $data->bindValue(':date', $date['Date'], \PDO::PARAM_INT);
+						 $data->execute();
+						 	
+							if ($data->rowCount() > 0) {
+					
+					            while($info = $data->fetch()) {
+								   $content .='<li>
+									 <div class="DateLi">'.$info['Date'].'</div>
+									 <div>'.$info['Calls'].'</div>
+									 <div>'.$info['Pitches'].'</div>
+									 <div>'.$info['Deals'].'</div>
+										</li>';
+									
+									
+								}//while info fetch
+								
+							} else {// if date row count
+							
+								$calls_q = "SELECT uc.calls FROM user_calls as uc WHERE uc.user_id= :user_id AND DATE(uc.date)= :date";
+								 
+								 $calls = $this->pdo->prepare($calls_q);
+								 $calls->bindValue(':user_id', $user['id'], \PDO::PARAM_INT);
+								 $calls->bindValue(':date', $date['Date'], \PDO::PARAM_INT);
+								 $calls->execute();
+								 
+								  if ($calls->rowCount() > 0) {
+					
+									  while($call = $calls->fetch()) {
+										 $content .='<li>
+										   <div class="DateLi">'.$date['date_of_pitch'].'</div>
+										   <div>'.$call['calls'].'</div>
+										   <div> - </div>
+										   <div> - </div>
+											  </li>';
+										  
+										  
+									  }//while calls fetch
+								
+							     } else {//if calls row count
+								 		 $content .='<li>
+										   <div class="DateLi">'.$date['date_of_pitch'].'</div>
+										   <div> - </div>
+										   <div> - </div>
+										   <div> - </div>
+											  </li>';
+								 
+								 }//else ends (no calls row)
+
+							} //else ends (no data row)
+						
+					}//while date
+									
+				}//if num row dates
+								
+								
+								
+								/*
 									
 						      $content .='<li>
 							     <div class="DateLi">10 April 2015</div>
@@ -982,6 +1063,9 @@ public function list_calls($user) {
 								 <div>3</div>
 								 <div>1</div>
 							        </li>';
+									
+									*/
+									
 									
 						    $content .='</ul>';
 						$content .= '</div>';//Days container ends
