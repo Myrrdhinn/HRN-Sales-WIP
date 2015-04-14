@@ -446,10 +446,12 @@ Goals functions
 	  $all_total_paid = 0;
 	  $all_total_VIP = 0;
 	  
-	  					$content .= '
+	  								 $content .= '
 							  <!--The main wrapper -->
-							  <div id="AnalyticsWrapper">
-								 
+							  <div id="AnalyticsWrapper">';
+	  
+	  					$content .= '
+ 
 							  <!-- User container-->
 								  <div id="AllHeader" class="UserContainer">
 								    <div >
@@ -461,7 +463,6 @@ Goals functions
 									  <div class="VIPHeader">VIP</div>
 									 </div> 								
 								  </div>							 
-								</div>
 									 ';	
 	  
 	  
@@ -566,9 +567,6 @@ Goals functions
 							
 					
 								 $content .= '
-							  <!--The main wrapper -->
-							  <div id="AnalyticsWrapper">
-								 
 							  <!-- User container-->
 								  <div class="UserContainer" onClick="container_display(this);">
 								    <div class="TotalContainer">
@@ -585,7 +583,6 @@ Goals functions
 									 </ul>
 								
 								  </div>							 
-								</div>
 									 ';	
 							
 							
@@ -600,10 +597,7 @@ Goals functions
 					}
 				}
 				
-							$content .= '
-							  <!--The main wrapper -->
-							  <div id="AnalyticsWrapper">
-								 
+							$content .= '	 
 							  <!-- User container-->
 								  <div id="AllTotal" class="UserContainer">
 								    <div class="TotalContainer">
@@ -615,10 +609,9 @@ Goals functions
 									  <div class="TotalVIP">'.$all_total_VIP.'</div>
 									 </div> 								
 								  </div>							 
-								</div>
 									 ';		
 				 
-				 
+				 $content .= '</div>';
 
 
 	return $content;	
@@ -637,6 +630,27 @@ Goals functions
 	  $all_total_price = 0;
 	  $all_total_paid = 0;
 	  $all_total_VIP = 0;
+	  
+	  								 $content .= '
+							  <!--The main wrapper -->
+							  <div id="AnalyticsWrapper">';
+							  
+							  
+							  	  					$content .= '
+ 
+							  <!-- User container-->
+								  <div id="AllHeader" class="UserContainer">
+								    <div >
+									  <div class="NameHeader">Team member</div>
+									  <div class="PitchHeader">Pitch no.</div>
+									  <div class="DealHeader">Deal no.</div>
+									  <div class="EarnedHeader">Earned</div>
+									  <div class="PaidHeader">Paid</div>
+									  <div class="VIPHeader">VIP</div>
+									 </div> 								
+								  </div>							 
+									 ';	
+	  
 	 
 	 	$users_q = "SELECT id, username FROM users";
 		 $users = $this->pdo->prepare($users_q);
@@ -733,10 +747,7 @@ Goals functions
 											$all_total_VIP += $total_VIP;
 							
 					
-								 $content .= '
-							  <!--The main wrapper -->
-							  <div id="AnalyticsWrapper">
-								 
+								 $content .= '								 
 							  <!-- User container-->
 								  <div class="UserContainer" onClick="container_display(this);">
 								    <div class="TotalContainer">
@@ -753,7 +764,6 @@ Goals functions
 									 </ul>
 								
 								  </div>							 
-								</div>
 									 ';	
 							
 							
@@ -769,9 +779,6 @@ Goals functions
 				}
 				
 											 $content .= '
-							  <!--The main wrapper -->
-							  <div id="AnalyticsWrapper">
-								 
 							  <!-- User container-->
 								  <div id="AllTotal" class="UserContainer">
 								    <div class="TotalContainer">
@@ -783,10 +790,9 @@ Goals functions
 									  <div class="TotalVIP">'.$all_total_VIP.'</div>
 									 </div> 								
 								  </div>							 
-								</div>
 									 ';		 
 				 
-
+$content .= '</div>';
 
 	return $content;	
 	 
@@ -802,16 +808,24 @@ public function get_callbacks($admin) {
 	  $content = '<option value="" hidden="hidden" selected="selected">Select a Call Back Date</option>'; 
        $content .= '<option value="All">All</option>'; 
 	 
-		 $country_q = "SELECT pr.callback_date FROM pitch_result as pr, pitch_data as pd WHERE pd.id=pr.pitch_data_id";
-		 if ($admin > 0) {
+		 $country_q = "SELECT pr.callback_date FROM pitch_result as pr, pitch_data as pd, user_team_connection as utc WHERE pd.id=pr.pitch_data_id AND pd.user_id=utc.user_id";
+		 if ($admin > 2) {
 			 $country_q .= " AND pd.user_id= :id";
+		 }
+		 
+		 if ($admin == 2) {
+			 $country_q .= " AND utc.team_id= :team_id";
 		 }
 		 
 		 $country_q .= " GROUP BY callback_date";
 		 
 		 $countries = $this->pdo->prepare($country_q);
-		  if ($admin > 0) {
+		  if ($admin > 2) {
 			 $countries->bindValue(':id', $admin, \PDO::PARAM_INT);
+		 }
+		 
+		  if ($admin == 2) {
+			 $countries->bindValue(':team_id', $_SESSION['team_id'], \PDO::PARAM_INT);
 		 }
 		 $countries->execute();
 		 
@@ -842,18 +856,33 @@ public function get_analytics_filters() {
 }
 
 
-public function get_team_members() {
+public function get_team_members($team_id) {
 	
 	$content = '';
 	$selected = '';
 	
-	  $content = '<option value="" hidden="hidden" selected="selected">Select a Call Back Date</option>'; 
+	  $content = '<option value="" hidden="hidden" selected="selected">Select a Team Member</option>'; 
        $content .= '<option value="All">All</option>'; 
 	 
-		 $country_q = "SELECT id, username FROM users";
+		 $country_q = "SELECT u.id, u.username FROM users as u, user_team_connection as utc WHERE u.id=utc.user_id";
+		 
+		 if ($_SESSION['admin'] == 2 || (isset($team_id) && $team_id != '')) {
+			$country_q .= ' AND utc.team_id = :id'; 
+		 }
 
 		 
 		 $countries = $this->pdo->prepare($country_q);
+		 
+		 
+		 if ($_SESSION['admin'] == 2) {
+			  $countries->bindValue(':id', $_SESSION['team_id'], \PDO::PARAM_INT);
+		 } else {
+			 if (isset($team_id) && $team_id != ''){
+				 $countries->bindValue(':id', $team_id, \PDO::PARAM_INT);
+			 }
+			 
+		 }
+
 
 		 $countries->execute();
 		 
@@ -875,7 +904,97 @@ public function get_team_members() {
 }
 
 
+public function get_teams() {
+	
+	$content = '';
+	$selected = '';
+	
+	  $content = '<option value="" hidden="hidden" selected="selected">Select a Team</option>'; 
+       $content .= '<option value="All">All</option>'; 
+	 
+		 $country_q = "SELECT id, team_name FROM teams";
+		 
 
+		 $countries = $this->pdo->prepare($country_q);
+
+
+		 $countries->execute();
+		 
+					if ($countries->rowCount() > 0) {
+					while($country = $countries->fetch()){
+						
+	                          if ($country['team_name'] != '') {
+								   $content .= '<option value="'.$country['id'].'">'.$country['team_name'].'</option>';
+							  }
+
+                        
+						 
+
+					} //personal fetch assoc end
+				}  //personal num rows if end
+				
+        /* $content .= '<option value="Other">Other</option>';*/
+	return $content;	
+}
+
+/*
+-------------------
+Calls functions
+-------------------
+*/
+
+public function list_calls($user) {
+	$content = '';
+	
+	$content .= '<div id="CallsContainer">';
+	
+		$users_q = "SELECT id, username FROM users";
+		 $users = $this->pdo->prepare($users_q);
+		 $users->execute();
+		 
+				if ($users->rowCount() > 0) {
+					while($user = $users->fetch()) {
+						$content .='<div class="UserContainer">';
+						
+					 $content .='<div class="UserName"><h3>'.$user['username'].'</h3>';
+					 $content .= '</div>';
+						  
+						$content .='<div class="DaysContainer">';
+						   $content .='<ul>';
+						   		$content .='<li>
+							     <div class="DateLi">Date</div>
+								 <div>Calls</div>
+								 <div>Pitches</div>
+								 <div>Deals</div>
+							        </li>';
+									
+									
+						      $content .='<li>
+							     <div class="DateLi">10 April 2015</div>
+								 <div>50</div>
+								 <div>4</div>
+								 <div>2</div>
+							        </li>';
+									
+					           $content .='<li>
+							     <div class="DateLi">3 May 2015</div>
+								 <div>40</div>
+								 <div>3</div>
+								 <div>1</div>
+							        </li>';
+									
+						    $content .='</ul>';
+						$content .= '</div>';//Days container ends
+						
+						$content .= '</div>';//user container ends
+					} //while user
+					
+			   } //if users row count
+		$content .= '</div>';
+			   
+  return $content;			   
+
+}
 
 }
 ?>

@@ -19,7 +19,7 @@ use HRNSales\main as main;
 
  <!--Main Wrapper-->
 	<div class="wrapper">
-	  <h1 class="WrapperMainH1">HR Tech Europe - Sales | Main Page - Goals</h1>
+	  <h1 class="WrapperMainH1">HR Tech Europe - Sales | Analytics </h1>
 	   
 	<!--Form container-->
 	 <div id="container">';

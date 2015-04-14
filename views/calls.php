@@ -16,12 +16,12 @@ use HRNSales\pitches as pitches;
 <link href="css/admin_general.css" rel="stylesheet">
 <link rel="stylesheet" href="css/admin_index.css" />
 <link href="css/general.css" rel="stylesheet">
-<link href="css/pitch.css" rel="stylesheet">
+<link href="css/calls.css" rel="stylesheet">
 
 <!--Include Font Awesome -->
 <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 
-<script src="js/pitch.js"></script> 
+<script src="js/calls.js"></script> 
 
 </head>
 <body>
@@ -73,13 +73,9 @@ use HRNSales\pitches as pitches;
 					$admin = $_SESSION['user_id'];
 				}
    
-   	    $content .='<div id="Advanced">
-		  <select id="Callbacks" class="SelectClass">
-		';
+   	    $content .='<div id="Advanced">';
 		
-		$content .= $main->get_callbacks($admin);
-        $content .='
-		  </select>';
+
 		  
 		  if (isset($_SESSION['admin'])) {
 		$content .='
@@ -89,40 +85,18 @@ use HRNSales\pitches as pitches;
 		$content .= $main->get_team_members('');
         $content .='
 		  </select>';
-		  
-		  
-				if ($_SESSION['admin'] < 2) {
-					  $content .='
-			  <select id="Teams" class="SelectClass">';
-				
-			  
-			  $content .= $main->get_teams();
-			  $content .='
-				</select>';
-				
-				}
-		}
+		  }
 		  
 		 $content .='</div>';
          
 		 $category = ''; 
 		 $value = ''; 
 		   
-		   /*  
-		   JUST FOR TEST!!
-		$category[0] = 	'u.id';	
-		$value[0][0] = 2;
-		$value[0][1] = 1;
-		
-		$category[1] = 'co.id';
-		$value[1][0] = 14;
-		
-		*/
 
 			 
 			 //Get the pitch data
 	    $content .='<div id="Pitch_Container">';
-		$content .= $pitches->list_pithces($category,$value, $admin);
+		$content .= $main->list_calls('All');
         $content .='</div>';
 	    
 	   

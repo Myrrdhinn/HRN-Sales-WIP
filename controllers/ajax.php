@@ -116,7 +116,7 @@ Pitches Filter
 	}
 	
 	if (isset($_SESSION['admin'])) {
-		 $admin = -200;
+		 $admin = $_SESSION['admin'];
 	} else {
 		 $admin = $_SESSION['user_id'];
 	}
@@ -127,6 +127,28 @@ Pitches Filter
 
 }// save Pitch data
 
+
+/*///////////// 
+Filter the Team Member select box
+///////////////*/
+
+
+ if(isset($_POST['action']) && $_POST['action'] == 'team_select_box_filter'){
+	$the_main = new main\main;
+	
+	if ($_POST['group'] == 'All'){
+		$team_id = '';
+		
+	} else {
+		$team_id = $_POST['group'];
+	}
+	
+    $result = $the_main->get_team_members($team_id);
+	if (isset($result)) {
+      echo $result;	
+	}
+
+}// save Pitch data
 
 
 ?>

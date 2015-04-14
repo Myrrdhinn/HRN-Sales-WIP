@@ -15,12 +15,17 @@ class pitches extends config {
 		$content = '';
 		//Get basic date about a sponsors
 		                    //pitch date            Deleagate name,     Title          country   pitch type, result type, deals,   callback      reason
-		$pitch_q = "SELECT pr.id, pd.date_of_pitch, de.first_name, de.last_name, de.title, co.country_code, pt.type as ptype, re.type as retype, pr.deals, pr.price, pr.callback_date, pr.reason, cy.company_name, u.username FROM pitch_data as pd, delegates as de, delegate_connection as delc, countries as co, pitch_type as pt, result_type as re, pitch_result as pr, company as cy, users as u WHERE pd.user_id=u.id AND pd.delegate_id=delc.delegate_id AND delc.country_id=co.id AND delc.delegate_id=de.id AND delc.company_id=cy.id AND pd.pitch_type_id=pt.id AND pr.pitch_data_id=pd.id AND pr.result_type_id=re.id";	
+		$pitch_q = "SELECT pr.id, pd.date_of_pitch, de.first_name, de.last_name, de.title, co.country_code, pt.type as ptype, re.type as retype, pr.deals, pr.price, pr.callback_date, pr.reason, cy.company_name, u.username FROM pitch_data as pd, delegates as de, delegate_connection as delc, countries as co, pitch_type as pt, result_type as re, pitch_result as pr, company as cy, users as u, user_team_connection as utc WHERE pd.user_id=u.id AND pd.delegate_id=delc.delegate_id AND delc.country_id=co.id AND delc.delegate_id=de.id AND utc.user_id=u.id AND delc.company_id=cy.id AND pd.pitch_type_id=pt.id AND pr.pitch_data_id=pd.id AND pr.result_type_id=re.id";	
 	
 
 	
-	if ($admin > 0) {
+	if ($admin > 2) {
 		$plus_q .= ' AND u.id= :id';
+		$pitch_q .=	$plus_q;
+	}
+	
+	if ($admin == 2) {
+		$plus_q .= ' AND utc.team_id= :id';
 		$pitch_q .=	$plus_q;
 	}
 	
@@ -31,6 +36,13 @@ class pitches extends config {
 		$cat_val = 0;
 
 		foreach ($cats as $cat) {
+			
+			if ($cat == 'team') {
+			    $plus_q .= ' AND utc.team_id= :team_id';
+				$data_team_id = $val[$cat_val];
+				$pitch_q .=	$plus_q;
+				$cat_val++;
+			}
 			
 			if ($cat == 'user') {
 			    $plus_q .= ' AND u.id= :user_id';
@@ -57,9 +69,17 @@ class pitches extends config {
 	$pitch_q .= " ORDER BY pd.date DESC";
 	
 		$pitch = $this->pdo->prepare($pitch_q);
-		if ($admin > 0) {
+		if ($admin > 2) {
 			$pitch->bindValue(':id', $admin, \PDO::PARAM_INT);
 		}
+		
+		if ($admin == 2) {
+			$pitch->bindValue(':id', $_SESSION['team_id'], \PDO::PARAM_INT);
+		}
+		if(isset($data_team_id) && $data_team_id != '') {
+			$pitch->bindValue(':team_id', $data_team_id, \PDO::PARAM_STR);
+		}
+		
 		if(isset($data_callback) && $data_callback != '') {
 			$pitch->bindValue(':callback', $data_callback, \PDO::PARAM_STR);
 		}

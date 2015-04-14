@@ -59,9 +59,21 @@ public function login($username, $password) {
 						   
 						   $_SESSION['user_id'] = $pass['id'];
 						   
-						   if ($pass['rank'] == 1) {
-							   $_SESSION['admin'] = true;
+						   if ($pass['rank'] < 3) {
+							   $_SESSION['admin'] = $pass['rank'];
+							   
 						   }
+						   
+						  
+							   $team_q = "SELECT team_id FROM user_team_connection WHERE user_id = :id ORDER BY date DESC LIMIT 0,1";
+							   $team = $this->pdo->prepare($team_q);
+							   $team->bindValue(':id', $pass['id'], \PDO::PARAM_STR);
+							   $team->execute();
+							   
+						if ($team->rowCount() > 0) {
+							 $team_id = $team->fetch();
+							 $_SESSION['team_id'] = $team_id['team_id'];
+						}
 						   
 						   /*
 						   include_once ('controllers/rank.php');
