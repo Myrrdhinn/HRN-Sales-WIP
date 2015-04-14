@@ -354,13 +354,31 @@ Mainpage functions
  
 public function save_call_number() {
 	
-	if (isset($_POST['call_num'])) {
+	if (isset($_POST['num'])) {
+		   $get_call = "SELECT calls FROM user_calls WHERE user_id = :user_id AND call_date = CURDATE()";
+		   $call = $this->pdo->prepare($get_call);
+		   $call->bindValue(':user_id', $_POST['id'], \PDO::PARAM_INT);
+		   $call->execute();
+		   
+		  if ($call->rowCount() > 0) {
+				 $insert_call = "UPDATE user_calls SET calls = :calls WHERE user_id = :user_id AND call_date = CURDATE()";
+				 $call2 = $this->pdo->prepare($insert_call);
+				 $call2->bindValue(':calls', $_POST['num'], \PDO::PARAM_INT);
+				 $call2->bindValue(':user_id', $_POST['id'], \PDO::PARAM_INT);
+				 $call2->execute();
+		  } else {
+				 $insert_call = "INSERT INTO user_calls SET user_id = :id, call_date = CURDATE(), calls = :calls";
+				 $call2 = $this->pdo->prepare($insert_call);
+				 $call2->bindValue(':id', $_POST['id'], \PDO::PARAM_INT);
+				 $call2->bindValue(':calls', $_POST['num'], \PDO::PARAM_INT);
+				 $call2->execute();
+				 
+			  
+		  }
 		
-		   $insert_call = "UPDATE user_calls SET calls = :calls WHERE user_id = :user_id AND call_date = CURDATE()";
-		   $call2 = $this->pdo->prepare($insert_call);
-		   $call2->bindValue(':calls', $_POST['call_num'], \PDO::PARAM_INT);
-		   $call2->bindValue(':user_id', $_SESSION['user_id'], \PDO::PARAM_INT);
-		   $call2->execute();
+		
+		
+
 		   
 			 return 'Success';
 			 
@@ -945,8 +963,15 @@ Calls functions
 
 public function list_calls($user) {
 	$content = '';
+	$plus_content = 0;
+	$username = '';
+	if (isset($user) && $user != '' && $user != 'All') {
+		$plus_content = 1;
+		$content .= '<div style="width:340px; display:inline-block;" id="CallsContainer">';
+	}else {
+	    $content .= '<div id="CallsContainer">';	
+	}
 	
-	$content .= '<div id="CallsContainer">';
 	
 		$users_q = "SELECT id, username FROM users";
 		if (isset($user) && $user != '' && $user != 'All') {
@@ -962,6 +987,9 @@ public function list_calls($user) {
 		 
 				if ($users->rowCount() > 0) {
 					while($user = $users->fetch()) {
+						$username = $user['username'];
+						$user_id = $user['id'];
+						
 						$content .='<div class="UserContainer">';
 						
 					 $content .='<div class="UserName"><h3>'.$user['username'].'</h3>';
@@ -1053,7 +1081,37 @@ public function list_calls($user) {
 					
 			   } //if users row count
 		$content .= '</div>';
-			   
+		
+		if ($plus_content == 1) {
+		$today = date('Y-m-d');	
+			
+			$today_q = "SELECT uc.calls FROM user_calls as uc WHERE uc.user_id= :user_id AND DATE(uc.date)= :date";
+			 
+			 $calls = $this->pdo->prepare($today_q);
+			 $calls->bindValue(':user_id', $user_id, \PDO::PARAM_INT);
+			 $calls->bindValue(':date', $today, \PDO::PARAM_STR);
+			 $calls->execute();
+			 
+			  if ($calls->rowCount() > 0) {
+
+				  $call = $calls->fetch();
+			      $call_num = $call['calls'];
+			 } else {
+				$call_num = 0; 
+			 }
+			
+			
+			
+			  $content .='	 	 
+			   <div id="CallInputs">
+				
+				   <label>Calls made today by '.$username.'<br /><input id="CallInputField" class="AdminInputField" type="text" placeholder="Call number" value="'.$call_num.'" /></label>
+				   <button onClick="save_call_num('.$user_id.');" id="CallSubmit" class="AdminSubmitButton">Change</button>
+
+			   </div>';
+		}
+		
+		
   return $content;			   
 
 }

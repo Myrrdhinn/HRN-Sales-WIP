@@ -29,7 +29,7 @@ Save number of calls
 ///////////////*/
 
 
- if(isset($_POST['action']) && $_POST['action'] == 'save_call_number'){
+ if(isset($_POST['action']) && $_POST['action'] == 'save_call_num'){
 	$the_main = new main\main;
     $result = $the_main->save_call_number();
 	if (isset($result)) {
