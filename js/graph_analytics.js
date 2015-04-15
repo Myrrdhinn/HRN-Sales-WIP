@@ -1,6 +1,7 @@
 $(document).ready(function(){ 
 var data = '';
 var country = '';
+
 			  		$.ajax({
 						url: 'controllers/ajax.php',
 						type: 'POST',
@@ -9,19 +10,9 @@ var country = '';
 						success: function(data) {
 							
 							if (data != '' && typeof data != 'undefined'){
-								var graph_vals = {
-									labels: data.labels,
-									series: [
-								      data.series[0],
-									  data.series[1],
-									  //data.series[2],
-									  data.series[3],
-									  data.series[4]
-									],
-									
-								}
-                                 show_graph(graph_vals);								
-								 
+								
+                                 show_graph(data);								
+								 allofit.data = data;
 							}
 							
 						}

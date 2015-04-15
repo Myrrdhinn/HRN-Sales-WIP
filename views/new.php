@@ -194,8 +194,7 @@ use HRNSales\main as main;
 	
 	
   	   
-	<br /><br /><br />
-  <a href="logout"><button name="logout">Logout</button></a>'; 
+	<br /><br /><br />'; 
   	   
 	   
    }

@@ -1,5 +1,6 @@
+ 
  $(document).ready(function(){
-	
+
    var d = new Date();
     var n = d.getMonth();
 	 n++;
@@ -93,18 +94,8 @@ var days = daysInMonth(n,year); //days on this month
 						success: function(data) {
 							
 							if (data != '' && typeof data != 'undefined'){
-								var graph_vals = {
-									labels: data.labels,
-									series: [
-								      data.series[0],
-									  data.series[1],
-									  //data.series[2],
-									  data.series[3],
-									  data.series[4]
-									],
-									
-								}
-                                 show_graph(graph_vals);								
+                                 show_graph(data);								
+								 allofit.data = data;								
 								 
 							}
 							
@@ -229,18 +220,8 @@ var days = daysInMonth(n,year); //days on this month
 						success: function(data) {
 							
 							if (data != '' && typeof data != 'undefined'){
-								var graph_vals = {
-									labels: data.labels,
-									series: [
-								      data.series[0],
-									  data.series[1],
-									  //data.series[2],
-									  data.series[3],
-									  data.series[4]
-									],
-									
-								}
-                                 show_graph(graph_vals);								
+                                 show_graph(data);								
+								 allofit.data = data;							
 								 
 							}
 							
@@ -280,18 +261,8 @@ var days = daysInMonth(n,year); //days on this month
 						success: function(data) {
 							
 							if (data != '' && typeof data != 'undefined'){
-								var graph_vals = {
-									labels: data.labels,
-									series: [
-								      data.series[0],
-									  data.series[1],
-									  //data.series[2],
-									  data.series[3],
-									  data.series[4]
-									],
-									
-								}
-                                 show_graph(graph_vals);								
+                                 show_graph(data);								
+								 allofit.data = data;							
 								 
 							}
 							
@@ -441,18 +412,8 @@ var days = daysInMonth(n,year); //days on this month
 						success: function(data) {
 							
 							if (data != '' && typeof data != 'undefined'){
-								var graph_vals = {
-									labels: data.labels,
-									series: [
-								      data.series[0],
-									  data.series[1],
-									  //data.series[2],
-									  data.series[3],
-									  data.series[4]
-									],
-									
-								}
-                                 show_graph(graph_vals);								
+                                 show_graph(data);								
+								 allofit.data = data;							
 								 
 							}
 							
@@ -531,18 +492,8 @@ var days = daysInMonth(n,year); //days on this month
 						success: function(data) {
 							
 							if (data != '' && typeof data != 'undefined'){
-								var graph_vals = {
-									labels: data.labels,
-									series: [
-								      data.series[0],
-									  data.series[1],
-									  //data.series[2],
-									  data.series[3],
-									  data.series[4]
-									],
-									
-								}
-                                 show_graph(graph_vals);								
+                                 show_graph(data);								
+								 allofit.data = data;							
 								 
 							}
 							
@@ -583,18 +534,8 @@ var days = daysInMonth(n,year); //days on this month
 						success: function(data) {
 							
 							if (data != '' && typeof data != 'undefined'){
-								var graph_vals = {
-									labels: data.labels,
-									series: [
-								      data.series[0],
-									  data.series[1],
-									  //data.series[2],
-									  data.series[3],
-									  data.series[4]
-									],
-									
-								}
-                                 show_graph(graph_vals);								
+                                 show_graph(data);								
+								 allofit.data = data;							
 								 
 							}
 							
@@ -606,23 +547,26 @@ var days = daysInMonth(n,year); //days on this month
 		  }//type of country not undefined
 	
      })  
-	  		
-	   
 	   
       });
 
 
 function container_display(e) {
 		 var dates = $(e).children('.Dates');
-		  
+		 var id = $(e).data('unum');
+		
+			
 		  if (dates.css('display') == 'none'){
 			  $(e).children('.TotalContainer').css('background-color','rgba(27, 173, 179, 0.65)');
 			   $(e).children('.TotalContainer').css('font-weight',600);
 			  dates.fadeIn('slow');
+			
+			  show_graph(allofit.data.users[id]);
 		  } else {
 			  dates.fadeOut('slow');
 			  $(e).children('.TotalContainer').css('background-color','rgba(34, 116, 116, 0.11)');
 			  $(e).children('.TotalContainer').css('font-weight',300);
+			  show_graph(allofit.data);
 		  }
 		  
 	

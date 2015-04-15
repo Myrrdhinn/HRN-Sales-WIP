@@ -14,7 +14,9 @@ use HRNSales\main as main;
 <link rel="stylesheet" href="css/admin_index.css" />
 <link rel="stylesheet" href="css/analytics.css" />
 
-<script src="js/analytics.js"></script>
+    <script> 
+        var allofit = {};
+    </script>
 
 
  <!--Graph library-->
@@ -22,6 +24,8 @@ use HRNSales\main as main;
 <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
 <link rel="stylesheet" href="css/graph_analytics.css" />
 <script src="js/graph_analytics.js"></script> 
+
+<script src="js/analytics.js"></script>
 
 </head>
 <body>
@@ -156,7 +160,7 @@ if (isset($_SESSION['admin'])) {
 	 <div id="MainAnalContent">';
   
      $content .= $main->get_analytics_data('','',''); 
-	 
+	   //$content .= $main->get_analytics_graph_data('','',''); 
 
    $content .='</div>';
   	   	  $content .='<div id="GraphContainer"><svg class="chart"></svg></div>';
@@ -167,8 +171,6 @@ if (isset($_SESSION['admin'])) {
 	 
 	<!--End of Main Wrapper-->
 	</div>
-
-  <a class="LogoutButton" href="logout"><button name="logout">Logout</button></a>
 	';  
    }
 

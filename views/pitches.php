@@ -139,8 +139,7 @@ use HRNSales\pitches as pitches;
 	
 	
   	   
-	<br /><br /><br />
-  <a href="logout"><button name="logout">Logout</button></a>'; 
+	<br /><br /><br />'; 
   	   
 	   
    }

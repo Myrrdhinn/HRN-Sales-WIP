@@ -465,7 +465,8 @@ Goals functions
 	  $all_total_VIP = 0;
 	  $username = '';
 	  $z = 0;
-
+	  
+      $content['users'] = array();
 	 
 	 	$users_q = "SELECT id, username FROM users";
 		 $users = $this->pdo->prepare($users_q);
@@ -475,7 +476,7 @@ Goals functions
 					while($user = $users->fetch()) {
 
 						
-							$data[0][0] = '';
+							$userdata[0][0] = '';
 					
 							$i = 0;
 							$plus_q = '';
@@ -531,12 +532,24 @@ Goals functions
 					
 								if ($pitch->rowCount() > 0) {
 									while($pitches = $pitch->fetch()){
-											$data[$i][0] = $pitches['date_of_pitch'];
-											$data[$i][1] = $pitches['pitches'];
-											$data[$i][2] = $pitches['deals'];
-											$data[$i][3] = $pitches['price'];
-											$data[$i][4] = $pitches['Paid'];
-											$data[$i][3] = $pitches['VIP'];
+											$content['users'][$user[0]]['labels'][$i] = $pitches['date_of_pitch'];
+											$content['users'][$user[0]]['series'][0]['value'][$i] = $pitches['pitches'];
+											$content['users'][$user[0]]['series'][0]['label'] = "Pitched";
+											
+											$content['users'][$user[0]]['series'][1]['value'][$i] = $pitches['deals'];
+											$content['users'][$user[0]]['series'][1]['label'] = "Deals";
+											
+											//$content['users'][$user[0]]['series'][2]['value'][$i] = $pitches['price'];
+											//$content['users'][$user[0]]['series'][2]['label'] = "Price";
+											
+											$content['users'][$user[0]]['series'][2]['value'][$i] = $pitches['Paid'];
+											$content['users'][$user[0]]['series'][2]['label'] = "Paid";
+											
+											$content['users'][$user[0]]['series'][3]['value'][$i] = $pitches['VIP'];
+											$content['users'][$user[0]]['series'][3]['label'] = "VIP";
+											
+											
+											
 											
 
 											$username .= $user[1].',';
@@ -564,18 +577,10 @@ Goals functions
 											$all_total_VIP += $total_VIP;
 							
 					                    $z++;
-		
-							
-								
 
-
-					 
-						
-
-						
 					
-					}
-				}
+					}//user while
+				}//user num row
 				
 
 											$output[$z]['name'] = "Total";
@@ -589,9 +594,10 @@ Goals functions
 		$content['labels'] = array();
 		$content['series'] = array();
 		
+		//data for the total numbers (total pitch etc)
 		$pitches = array();	
 		$deals = array();	
-		$price = array();
+		//$price = array();
 		$paid = array();
 		$vip = array();						
 	  foreach ($output as $data) {
@@ -599,7 +605,7 @@ Goals functions
 			
            array_push($pitches, $data['pitch']);
 		   array_push($deals, $data['deals']);
-		   array_push($price, $data['price']);
+		   //array_push($price, $data['price']);
 		   array_push($paid, $data['paid']);
 		   array_push($vip, $data['vip']);
 		}
@@ -615,10 +621,10 @@ Goals functions
 			
 			array_push($content['series'], $pushdata);
 			
-			$pushdata['label'] = "Price";
-			$pushdata['value'] = $price;
+			//$pushdata['label'] = "Price";
+			//$pushdata['value'] = $price;
 			
-			array_push($content['series'], $pushdata);
+			//array_push($content['series'], $pushdata);
 			
 			$pushdata['label'] = "Paid";
 			$pushdata['value'] = $paid;
@@ -713,6 +719,13 @@ Goals functions
 					
 								if ($pitch->rowCount() > 0) {
 									while($pitches = $pitch->fetch()){
+										
+											$data[$i][0] = $pitches['date_of_pitch'];
+											$data[$i][1] = $pitches['pitches'];
+											$data[$i][2] = $pitches['deals'];
+											$data[$i][3] = $pitches['price'];
+											$data[$i][4] = $pitches['Paid'];
+											$data[$i][3] = $pitches['VIP'];
 
 
 											$username .= $user[1].',';
@@ -949,7 +962,7 @@ Goals functions
 					
 								 $content .= '
 							  <!-- User container-->
-								  <div class="UserContainer" onClick="container_display(this);">
+								  <div class="UserContainer" data-unum="'.$user[0].'" onClick="container_display(this);">
 								    <div class="TotalContainer">
 									  <div class="UserName">'.$user[1].'</div>
 									  <div class="TotalPitchNum">'.$pitch_num.'</div>
@@ -1131,7 +1144,7 @@ Goals functions
 					
 								 $content .= '								 
 							  <!-- User container-->
-								  <div class="UserContainer" onClick="container_display(this);">
+								  <div class="UserContainer" data-unum="'.$user[0].'" onClick="container_display(this);">
 								    <div class="TotalContainer">
 									  <div class="UserName">'.$user[1].'</div>
 									  <div class="TotalPitchNum">'.$pitch_num.'</div>
