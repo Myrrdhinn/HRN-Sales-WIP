@@ -1,10 +1,44 @@
 @charset "utf-8";
 /* General Definitions*/
 
+.wrapper {
+  max-width: 100%;	
+}
+
 .UserName {
   width: 100%;
   width: 14vw;
   display: inline-block;
+}
+
+@media (max-width: 500px){
+.UserName {
+  width: 65px;
+}
+	
+}
+#MainAnalContent {
+	display:inline-block;
+	float:left;
+	margin-bottom:4vw;
+		
+}
+
+#AnalyticsWrapper {
+	width:100%;
+	max-width:45vw;	
+	display:inline-block;
+}
+
+@media (max-width: 900px){
+#AnalyticsWrapper {
+	max-width:100%;	
+
+}
+}
+
+#GraphContainer {
+	display:inline-block;
 }
 
 .TotalContainer {
@@ -20,12 +54,42 @@
 	min-width: 3vw;
 }
 
+.TotalPrice {
+	width:36px;
+}
+
 /*Headers*/
 
 #AllHeader {
 	border-bottom:#000000 solid 1px;
 	font-weight:600;
+	font-size:18px;
 }
+
+@media (max-width: 1650px){
+#AllHeader {
+	font-size:17px;
+}
+}
+
+@media (max-width: 950px){
+#AllHeader {
+	font-size:15px;
+}
+}
+
+@media (max-width: 800px){
+#AllHeader {
+	font-size:14px;
+}
+}
+
+@media (max-width: 650px){
+#AllHeader {
+	font-size:12px;
+}
+}
+
 
 .NameHeader, .PitchHeader, .DealHeader, .EarnedHeader, .PaidHeader, .VIPHeader{
 	display: inline-block;
@@ -130,14 +194,14 @@ margin-top: 3vw;
   
   margin-top: 1vw;
   padding: 0.2vw;
-  max-width: 40vw;
+  max-width: 42vw;
 	
 }
-@media (max-width: 1250px){
+@media (max-width: 1060px){
 .UserContainer {
   
 
-  max-width: 45vw;
+  max-width: 100%;
 	
 }
 }
@@ -180,5 +244,14 @@ margin-top: 3vw;
  .SelectClass {
 	min-height: 8vw;	
 }
+
+	
+}
+
+.LogoutButton {
+	clear: both;
+  margin: 90px 0;
+  position: absolute;
+  left: 40px;
 	
 }

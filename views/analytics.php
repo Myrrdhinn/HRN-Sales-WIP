@@ -13,7 +13,16 @@ use HRNSales\main as main;
 <link rel="stylesheet" href="css/admin_edit_general.css" />
 <link rel="stylesheet" href="css/admin_index.css" />
 <link rel="stylesheet" href="css/analytics.css" />
-<script src="js/analytics.js"></script> 
+
+<script src="js/analytics.js"></script>
+
+
+ <!--Graph library-->
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+<link rel="stylesheet" href="css/graph_analytics.css" />
+<script src="js/graph_analytics.js"></script> 
+
 </head>
 <body>
 
@@ -148,20 +157,18 @@ if (isset($_SESSION['admin'])) {
   
      $content .= $main->get_analytics_data('','',''); 
 	 
-   $content .='</div>';
-  	   
-	 $content .='<br /><br /><br />
-  <a href="logout"><button name="logout">Logout</button></a>
 
-  
-  
-  	
+   $content .='</div>';
+  	   	  $content .='<div id="GraphContainer"><svg class="chart"></svg></div>';
+	 $content .='
+
 	   <!-- End of Form Container-->
 	 </div>
 	 
 	<!--End of Main Wrapper-->
 	</div>
-	
+
+  <a class="LogoutButton" href="logout"><button name="logout">Logout</button></a>
 	';  
    }
 

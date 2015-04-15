@@ -86,6 +86,34 @@ Date filter
 }// save Pitch data
 
 /*///////////// 
+Get Graph data
+///////////////*/
+
+
+ if(isset($_POST['action']) && $_POST['action'] == 'analytics_graph_filter'){
+	$the_main = new main\main;
+    $result = $the_main->get_analytics_graph_data($_POST['data'], $_POST['country'], '');
+	if (isset($result)) {
+      echo $result;	
+	}
+
+}// save Pitch data
+
+/*///////////// 
+Get Graph data Intervall
+///////////////*/
+
+
+ if(isset($_POST['action']) && $_POST['action'] == 'analytics_graph_filter_intervall'){
+	$the_main = new main\main;
+    $result = $the_main->get_analytics_graph_data_intervall($_POST['data'], $_POST['country'], '');
+	if (isset($result)) {
+      echo $result;	
+	}
+
+}// save Pitch data
+
+/*///////////// 
 Date filter Intervall
 ///////////////*/
 

@@ -83,13 +83,46 @@ var days = daysInMonth(n,year); //days on this month
 						}
 					});
 					
+										/*Graph*/
+					
+								  		$.ajax({
+						url: 'controllers/ajax.php',
+						type: 'POST',
+						dataType: "json",
+						data: {action:'analytics_graph_filter', data:data, country:country},
+						success: function(data) {
+							
+							if (data != '' && typeof data != 'undefined'){
+								var graph_vals = {
+									labels: data.labels,
+									series: [
+								      data.series[0],
+									  data.series[1],
+									  //data.series[2],
+									  data.series[3],
+									  data.series[4]
+									],
+									
+								}
+                                 show_graph(graph_vals);								
+								 
+							}
+							
+						}
+					});
+					
+					
 			  
 			  
 		  }
 	
      })  
 	 
-	 
+	 /*
+	 ------------
+	 Weeks
+	 -------------
+	 */
 	 $('#Weeks').bind('change', function (e) {
 		 
 		  var country = $('#Country').val();
@@ -186,7 +219,33 @@ var days = daysInMonth(n,year); //days on this month
 						}
 					});
 					
-				  
+				  					/*Graph*/
+					
+								  		$.ajax({
+						url: 'controllers/ajax.php',
+						type: 'POST',
+						dataType: "json",
+						data: {action:'analytics_graph_filter', data:data, country:country},
+						success: function(data) {
+							
+							if (data != '' && typeof data != 'undefined'){
+								var graph_vals = {
+									labels: data.labels,
+									series: [
+								      data.series[0],
+									  data.series[1],
+									  //data.series[2],
+									  data.series[3],
+									  data.series[4]
+									],
+									
+								}
+                                 show_graph(graph_vals);								
+								 
+							}
+							
+						}
+					});
 				  
 				 
 				   //if weeks = all end
@@ -211,6 +270,34 @@ var days = daysInMonth(n,year); //days on this month
 							
 						}
 					});
+					
+										/*Graph*/
+								  		$.ajax({
+						url: 'controllers/ajax.php',
+						type: 'POST',
+						dataType: "json",
+						data: {action:'analytics_graph_filter_intervall', data:data, country:country},
+						success: function(data) {
+							
+							if (data != '' && typeof data != 'undefined'){
+								var graph_vals = {
+									labels: data.labels,
+									series: [
+								      data.series[0],
+									  data.series[1],
+									  //data.series[2],
+									  data.series[3],
+									  data.series[4]
+									],
+									
+								}
+                                 show_graph(graph_vals);								
+								 
+							}
+							
+						}
+					});
+					
 				}//if weeks != all	end
 			  
 			  
@@ -343,6 +430,34 @@ var days = daysInMonth(n,year); //days on this month
 							
 						}
 					});
+					
+										/*Graph*/
+					
+								  		$.ajax({
+						url: 'controllers/ajax.php',
+						type: 'POST',
+						dataType: "json",
+						data: {action:'analytics_graph_filter', data:data, country:country},
+						success: function(data) {
+							
+							if (data != '' && typeof data != 'undefined'){
+								var graph_vals = {
+									labels: data.labels,
+									series: [
+								      data.series[0],
+									  data.series[1],
+									  //data.series[2],
+									  data.series[3],
+									  data.series[4]
+									],
+									
+								}
+                                 show_graph(graph_vals);								
+								 
+							}
+							
+						}
+					});
 			  
 			  
 			  
@@ -352,11 +467,11 @@ var days = daysInMonth(n,year); //days on this month
 	 
 	 
 	 //Country change
-	 	   $('#Country').bind('change', function (e) {
+	 $('#Country').bind('change', function (e) {
 				var month = $('#Months').val();
 				
 				 
-				 if(month == -1 || month == 'All') {
+				 if(month == -1) {
 					 month = '';
 				 }
 				 
@@ -378,7 +493,7 @@ var days = daysInMonth(n,year); //days on this month
 			  var weeks = $('#Weeks').val();
 			  
 			  
-			  if(days == '' && typeof weeks != 'undefined' && weeks != 'All' && weeks != '' && weeks !=-1) {
+			  if(days == '' && typeof weeks != 'undefined' && weeks != 'All' && weeks != '' && weeks !=-1 && month != 'All') {
 				  if (month != '') {
 					  month = getMonthFromString(month);
 				  } else {
@@ -389,7 +504,6 @@ var days = daysInMonth(n,year); //days on this month
 					  
 				  }
 				   
-				  
 			        var data = 'intervall,'+weeks+','+month; 
 
 					
@@ -406,10 +520,38 @@ var days = daysInMonth(n,year); //days on this month
 							
 						}
 					});
+					
+										/*Graph*/
+					
+								  		$.ajax({
+						url: 'controllers/ajax.php',
+						type: 'POST',
+						dataType: "json",
+						data: {action:'analytics_graph_filter_intervall', data:data, country:country},
+						success: function(data) {
+							
+							if (data != '' && typeof data != 'undefined'){
+								var graph_vals = {
+									labels: data.labels,
+									series: [
+								      data.series[0],
+									  data.series[1],
+									  //data.series[2],
+									  data.series[3],
+									  data.series[4]
+									],
+									
+								}
+                                 show_graph(graph_vals);								
+								 
+							}
+							
+						}
+					});
 			  
 		    }  else {
 					 //if the weeks in undefined or not specified
-					if (month == '' && days == '') {
+					if ((month == '' && days == '') || month == 'All' || days == 'All') {
 						 var data = 'All'; 
 					} else {
 						var data = '%'+days+' '+month+'%'; 	
@@ -429,6 +571,35 @@ var days = daysInMonth(n,year); //days on this month
 									
 								}
 							});
+							
+							
+												/*Graph*/
+					
+								  		$.ajax({
+						url: 'controllers/ajax.php',
+						type: 'POST',
+						dataType: "json",
+						data: {action:'analytics_graph_filter', data:data, country:country},
+						success: function(data) {
+							
+							if (data != '' && typeof data != 'undefined'){
+								var graph_vals = {
+									labels: data.labels,
+									series: [
+								      data.series[0],
+									  data.series[1],
+									  //data.series[2],
+									  data.series[3],
+									  data.series[4]
+									],
+									
+								}
+                                 show_graph(graph_vals);								
+								 
+							}
+							
+						}
+					});
 					
 			  }//if not intervall else ends
 			  

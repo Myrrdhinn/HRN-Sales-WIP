@@ -126,7 +126,7 @@ class pitches extends config {
 		   $content .='<div class="TableRow HeaderRow">Call Back Date</div>';
 		   $content .='<div class="TableRow HeaderRow">Result</div>';
 		    $content .='<div class="TableRow HeaderRow">Price</div>';
-		   $content .='<div class="TableRow HeaderRow">No. of Deals</div>';
+		   $content .='<div class="TableRow HeaderRow">Number of Deals</div>';
 		   $content .='<div class="TableRow HeaderRow">Reason</div>';
 		 
 		 $content .='</div>'; //header col end

@@ -453,7 +453,370 @@ Goals functions
 -------------------------------
 Goals functions
 -------------------------------
-*/	
+*/
+
+ public function get_analytics_graph_data($date, $country, $industry) {
+	 $content = '';
+	  $all_pitch_num = 0;
+	  $all_deal_num = 0;
+	  $all_list_data = '';
+	  $all_total_price = 0;
+	  $all_total_paid = 0;
+	  $all_total_VIP = 0;
+	  $username = '';
+	  $z = 0;
+
+	 
+	 	$users_q = "SELECT id, username FROM users";
+		 $users = $this->pdo->prepare($users_q);
+		 $users->execute();
+		 
+				if ($users->rowCount() > 0) {
+					while($user = $users->fetch()) {
+
+						
+							$data[0][0] = '';
+					
+							$i = 0;
+							$plus_q = '';
+							$s = 0;
+							
+							//Get basic date about a sponsors
+											   //pitch
+							$pitch_q = "SELECT COUNT(pd.id) as pitches, SUM(pr.deals) as deals, SUM(pr.price) as price, pd.date_of_pitch, (SELECT COUNT(prt.result_type_id) FROM pitch_result as prt, pitch_data as pdt WHERE prt.result_type_id=3 AND pdt.user_id=u.id AND pdt.id=prt.pitch_data_id AND pdt.date_of_pitch=pd.date_of_pitch) as Paid, (SELECT COUNT(prt.result_type_id) FROM pitch_result as prt, pitch_data as pdt WHERE prt.result_type_id=4 AND pdt.user_id=u.id AND pdt.id=prt.pitch_data_id AND pdt.date_of_pitch=pd.date_of_pitch) as VIP FROM users as u, pitch_data as pd, pitch_result as pr, countries as co, delegate_connection as delc WHERE u.id= :id AND u.id=pd.user_id AND pr.pitch_data_id=pd.id AND pd.delegate_id=delc.delegate_id AND delc.country_id=co.id";	
+					        //if we (nem jut eszembe, szóval) dátum alapján szűrünk .. oh.. filter.. damn
+							//-----------------------------------------
+ 					    if (isset($date) && $date != '' && $date != 'All') {
+							$plus_q = ' AND pd.date_of_pitch LIKE :pitch';
+						
+						     $pitch_q .= $plus_q;
+					
+						  }
+						  
+						  
+						  //if we filter (;)) based on country
+						  //-------------------------------
+						  if (isset($country) && $country != -1 && $country != '') {
+							 $plus_q = ' AND co.id= :country';
+						
+						     $pitch_q .= $plus_q;
+							  
+						  }
+						  
+						$pitch_q .=' GROUP BY pd.date_of_pitch ORDER BY pd.date';
+						
+					
+						
+							$pitch = $this->pdo->prepare($pitch_q);
+							$pitch->bindValue(':id', $user[0], \PDO::PARAM_INT);
+							
+
+							 if (isset($date) && $date != ''  && $date != 'All') {
+							   $pitch->bindValue(':pitch', $date, \PDO::PARAM_STR);
+							 }
+							 
+							 if (isset($country) && $country != -1 && $country != '') {
+							   $pitch->bindValue(':country', $country, \PDO::PARAM_INT);
+							 }
+							
+							 
+							 $pitch->execute();
+							 
+							$pitch_num = 0;
+							$deal_num = 0;
+							$list_data = '';
+							$total_price = 0;
+						    $total_paid = 0;
+							$total_VIP = 0;
+					
+								if ($pitch->rowCount() > 0) {
+									while($pitches = $pitch->fetch()){
+											$data[$i][0] = $pitches['date_of_pitch'];
+											$data[$i][1] = $pitches['pitches'];
+											$data[$i][2] = $pitches['deals'];
+											$data[$i][3] = $pitches['price'];
+											$data[$i][4] = $pitches['Paid'];
+											$data[$i][3] = $pitches['VIP'];
+											
+
+											$username .= $user[1].',';
+											$pitch_num += $pitches['pitches'];
+										    $deal_num += $pitches['deals'];
+											$total_price += $pitches['price'];
+											$total_paid += $pitches['Paid'];
+											$total_VIP += $pitches['VIP'];
+
+											$i++;
+										} //stat_q fetch
+								}  //stat num row end
+								            
+											$output[$z]['name'] = $user[1];
+											$output[$z]['pitch'] = $pitch_num;
+											$output[$z]['deals'] = $deal_num;
+											$output[$z]['price'] = $total_price;
+											$output[$z]['paid'] = $total_paid;
+											$output[$z]['vip'] = $total_VIP;
+							
+											$all_pitch_num += $pitch_num;
+										    $all_deal_num += $deal_num;
+											$all_total_price += $total_price;
+											$all_total_paid += $total_paid;
+											$all_total_VIP += $total_VIP;
+							
+					                    $z++;
+		
+							
+								
+
+
+					 
+						
+
+						
+					
+					}
+				}
+				
+
+											$output[$z]['name'] = "Total";
+											$output[$z]['pitch'] = $all_pitch_num;
+											$output[$z]['deals'] = $all_deal_num;
+											$output[$z]['price'] = $all_total_price;
+											$output[$z]['paid'] = $all_total_paid;
+											$output[$z]['vip'] = $all_total_VIP;
+											
+		$k = 0;	
+		$content['labels'] = array();
+		$content['series'] = array();
+		
+		$pitches = array();	
+		$deals = array();	
+		$price = array();
+		$paid = array();
+		$vip = array();						
+	  foreach ($output as $data) {
+		    array_push($content['labels'], $data['name']);
+			
+           array_push($pitches, $data['pitch']);
+		   array_push($deals, $data['deals']);
+		   array_push($price, $data['price']);
+		   array_push($paid, $data['paid']);
+		   array_push($vip, $data['vip']);
+		}
+							
+
+			$pushdata['label'] = "Pitched";
+			$pushdata['value'] = $pitches;
+			
+			array_push($content['series'], $pushdata);
+			
+			$pushdata['label'] = "Deals";
+			$pushdata['value'] = $deals;
+			
+			array_push($content['series'], $pushdata);
+			
+			$pushdata['label'] = "Price";
+			$pushdata['value'] = $price;
+			
+			array_push($content['series'], $pushdata);
+			
+			$pushdata['label'] = "Paid";
+			$pushdata['value'] = $paid;
+			
+			array_push($content['series'], $pushdata);
+			
+			$pushdata['label'] = "VIP";
+			$pushdata['value'] = $vip;
+			
+			array_push($content['series'], $pushdata);
+
+	return json_encode($content);	
+	 
+	 
+	 
+ }
+
+
+
+ public function get_analytics_graph_data_intervall($date, $country, $industry) {
+	 $content = '';
+	  $all_pitch_num = 0;
+	  $all_deal_num = 0;
+	  $all_list_data = '';
+	  $all_total_price = 0;
+	  $all_total_paid = 0;
+	  $all_total_VIP = 0;
+	  $username = '';
+	  $z = 0;
+	 
+	 	$users_q = "SELECT id, username FROM users";
+		 $users = $this->pdo->prepare($users_q);
+		 $users->execute();
+		 
+				if ($users->rowCount() > 0) {
+					while($user = $users->fetch()) {
+							
+							$datestuff = explode(',',$date);
+							if (isset($datestuff[1]) && isset($datestuff[2])){
+								$days = explode('-', $datestuff[1]);
+								
+								if (!isset($year)) {
+								 $year = '2015';	
+								}
+								
+								$first = $year.'-'.$datestuff[2].'-'.$days[0];
+								$last = $year.'-'.$datestuff[2].'-'.$days[1];
+
+						
+							$data[0][0] = '';
+					
+							$i = 0;
+							$plus_q = '';
+							$s = 0;
+							
+							
+							//Get basic date about a sponsors
+											   //pitch
+							$pitch_q = "SELECT COUNT(pd.id) as pitches, SUM(pr.deals) as deals, SUM(pr.price) as price, pd.date_of_pitch, (SELECT COUNT(prt.result_type_id) FROM pitch_result as prt, pitch_data as pdt WHERE prt.result_type_id=3 AND pdt.user_id=u.id AND pdt.id=prt.pitch_data_id AND pdt.date_of_pitch=pd.date_of_pitch) as Paid, (SELECT COUNT(prt.result_type_id) FROM pitch_result as prt, pitch_data as pdt WHERE prt.result_type_id=4 AND pdt.user_id=u.id AND pdt.id=prt.pitch_data_id AND pdt.date_of_pitch=pd.date_of_pitch) as VIP FROM users as u, pitch_data as pd, pitch_result as pr, countries as co, delegate_connection as delc WHERE u.id= :id AND u.id=pd.user_id AND pr.pitch_data_id=pd.id AND pd.delegate_id=delc.delegate_id AND delc.country_id=co.id AND pd.date BETWEEN :start AND :end";	
+							
+							 //if we filter (;)) based on country
+						  //-------------------------------
+						  if (isset($country) && $country != -1 && $country != '') {
+							 $plus_q = ' AND co.id= :country';
+						
+						     $pitch_q .= $plus_q;
+							  
+						  }
+					
+
+						$pitch_q .=' GROUP BY pd.date_of_pitch ORDER BY pd.date';
+						
+					//echo $pitch_q;
+						
+							$pitch = $this->pdo->prepare($pitch_q);
+							$pitch->bindValue(':id', $user[0], \PDO::PARAM_INT);
+							$pitch->bindValue(':start', $first, \PDO::PARAM_STR);
+							$pitch->bindValue(':end', $last, \PDO::PARAM_STR);
+							 if (isset($country) && $country != -1 && $country != '') {
+							   $pitch->bindValue(':country', $country, \PDO::PARAM_INT);
+							 }
+							
+
+							 $pitch->execute();
+							 
+							$pitch_num = 0;
+							$deal_num = 0;
+							$list_data = '';
+							$total_price = 0;
+						    $total_paid = 0;
+							$total_VIP = 0;
+					
+								if ($pitch->rowCount() > 0) {
+									while($pitches = $pitch->fetch()){
+
+
+											$username .= $user[1].',';
+											$pitch_num += $pitches['pitches'];
+										    $deal_num += $pitches['deals'];
+											$total_price += $pitches['price'];
+											$total_paid += $pitches['Paid'];
+											$total_VIP += $pitches['VIP'];
+
+											$i++;
+										} //stat_q fetch
+								}  //stat num row end
+								            
+											$output[$z]['name'] = $user[1];
+											$output[$z]['pitch'] = $pitch_num;
+											$output[$z]['deals'] = $deal_num;
+											$output[$z]['price'] = $total_price;
+											$output[$z]['paid'] = $total_paid;
+											$output[$z]['vip'] = $total_VIP;
+							
+											$all_pitch_num += $pitch_num;
+										    $all_deal_num += $deal_num;
+											$all_total_price += $total_price;
+											$all_total_paid += $total_paid;
+											$all_total_VIP += $total_VIP;
+							
+					                    $z++;
+
+								
+							}//if isset($datestuff[1]) && isset($datestuff[2])
+
+					 
+						
+
+						
+					
+					}//user while
+				}//user row count
+				
+										    $all_pitch_num += $pitch_num;
+										    $all_deal_num += $deal_num;
+											$all_total_price += $total_price;
+											$all_total_paid += $total_paid;
+											$all_total_VIP += $total_VIP;
+							
+	
+											$output[$z]['name'] = "Total";
+											$output[$z]['pitch'] = $all_pitch_num;
+											$output[$z]['deals'] = $all_deal_num;
+											$output[$z]['price'] = $all_total_price;
+											$output[$z]['paid'] = $all_total_paid;
+											$output[$z]['vip'] = $all_total_VIP;
+											
+		$k = 0;	
+		$content['labels'] = array();
+		$content['series'] = array();
+		
+		$pitches = array();	
+		$deals = array();	
+		$price = array();
+		$paid = array();
+		$vip = array();						
+	  foreach ($output as $data) {
+		    array_push($content['labels'], $data['name']);
+			
+           array_push($pitches, $data['pitch']);
+		   array_push($deals, $data['deals']);
+		   array_push($price, $data['price']);
+		   array_push($paid, $data['paid']);
+		   array_push($vip, $data['vip']);
+		}
+							
+
+			$pushdata['label'] = "Pitched";
+			$pushdata['value'] = $pitches;
+			
+			array_push($content['series'], $pushdata);
+			
+			$pushdata['label'] = "Deals";
+			$pushdata['value'] = $deals;
+			
+			array_push($content['series'], $pushdata);
+			
+			$pushdata['label'] = "Price";
+			$pushdata['value'] = $price;
+			
+			array_push($content['series'], $pushdata);
+			
+			$pushdata['label'] = "Paid";
+			$pushdata['value'] = $paid;
+			
+			array_push($content['series'], $pushdata);
+			
+			$pushdata['label'] = "VIP";
+			$pushdata['value'] = $vip;
+			
+			array_push($content['series'], $pushdata);
+
+	return json_encode($content);	
+	 
+	 
+	 
+ }
+	
 
  public function get_analytics_data($date, $country, $industry) {
 	 $content = '';
@@ -474,8 +837,8 @@ Goals functions
 								  <div id="AllHeader" class="UserContainer">
 								    <div >
 									  <div class="NameHeader">Team member</div>
-									  <div class="PitchHeader">Pitch no.</div>
-									  <div class="DealHeader">Deal no.</div>
+									  <div class="PitchHeader">Pitches</div>
+									  <div class="DealHeader">Deals</div>
 									  <div class="EarnedHeader">Earned</div>
 									  <div class="PaidHeader">Paid</div>
 									  <div class="VIPHeader">VIP</div>
@@ -649,6 +1012,7 @@ Goals functions
 	  $all_total_paid = 0;
 	  $all_total_VIP = 0;
 	  
+	  
 	  								 $content .= '
 							  <!--The main wrapper -->
 							  <div id="AnalyticsWrapper">';
@@ -660,8 +1024,8 @@ Goals functions
 								  <div id="AllHeader" class="UserContainer">
 								    <div >
 									  <div class="NameHeader">Team member</div>
-									  <div class="PitchHeader">Pitch no.</div>
-									  <div class="DealHeader">Deal no.</div>
+									  <div class="PitchHeader">Pitches.</div>
+									  <div class="DealHeader">Deals</div>
 									  <div class="EarnedHeader">Earned</div>
 									  <div class="PaidHeader">Paid</div>
 									  <div class="VIPHeader">VIP</div>
@@ -1105,7 +1469,7 @@ public function list_calls($user) {
 			  $content .='	 	 
 			   <div id="CallInputs">
 				
-				   <label>Calls made today by '.$username.'<br /><input id="CallInputField" class="AdminInputField" type="text" placeholder="Call number" value="'.$call_num.'" /></label>
+				   <label>Calls made by '.$username.' today:<br /><input id="CallInputField" class="AdminInputField" type="text" placeholder="Call number" value="'.$call_num.'" /></label>
 				   <button onClick="save_call_num('.$user_id.');" id="CallSubmit" class="AdminSubmitButton">Change</button>
 
 			   </div>';
