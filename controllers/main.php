@@ -451,11 +451,11 @@ Goals functions
 
 /*
 -------------------------------
-Goals functions
+Graph data
 -------------------------------
 */
 
- public function get_analytics_graph_data($date, $country, $industry) {
+ public function get_analytics_graph_data($date, $country, $teams) {
 	 $content = '';
 	  $all_pitch_num = 0;
 	  $all_deal_num = 0;
@@ -468,8 +468,40 @@ Goals functions
 	  
       $content['users'] = array();
 	 
-	 	$users_q = "SELECT id, username FROM users";
+	 	$users_q = "SELECT u.id, u.username FROM users as u, user_team_connection as utc WHERE u.id=utc.user_id";
+				if (isset($teams[0]) && $teams[0] != 'All' && $teams[0] != '') {
+						$teamid = -1;
+					  foreach ($teams as $team) {
+							$teamid ++;
+							if ($teamid == 0){
+								$plus_q = ' AND (utc.team_id= :tid'.$teamid;
+							} else {
+								$plus_q .= ' OR utc.team_id= :tid'.$teamid;
+							}
+						   
+						   
+					  }
+					  $plus_q .= ')';
+					  $users_q .= $plus_q;
+				  }
+				  
+		
 		 $users = $this->pdo->prepare($users_q);
+		 
+						  
+				  
+					if (isset($teams[0]) && $teams[0] != 'All' && $teams[0] != '') {
+						$teamid = -1;
+					  foreach ($teams as $team) {
+						  $teamid++;
+							$users->bindValue(':tid'.$teamid, $team, \PDO::PARAM_INT);
+						   
+					  }
+					  
+				  }
+					 
+		 
+		 
 		 $users->execute();
 		 
 				if ($users->rowCount() > 0) {
@@ -503,6 +535,7 @@ Goals functions
 						     $pitch_q .= $plus_q;
 							  
 						  }
+						  
 						  
 						$pitch_q .=' GROUP BY pd.date_of_pitch ORDER BY pd.date';
 						
@@ -643,8 +676,12 @@ Goals functions
  }
 
 
-
- public function get_analytics_graph_data_intervall($date, $country, $industry) {
+/*
+------------
+Graph Data Intervall
+---------
+*/
+ public function get_analytics_graph_data_intervall($date, $country, $teams) {
 	 $content = '';
 	  $all_pitch_num = 0;
 	  $all_deal_num = 0;
@@ -655,8 +692,40 @@ Goals functions
 	  $username = '';
 	  $z = 0;
 	 
-	 	$users_q = "SELECT id, username FROM users";
+	 	$users_q = "SELECT u.id, u.username FROM users as u, user_team_connection as utc WHERE u.id=utc.user_id";
+					if (isset($teams[0]) && $teams[0] != 'All' && $teams[0] != '') {
+						$teamid = -1;
+					  foreach ($teams as $team) {
+							$teamid ++;
+							if ($teamid == 0){
+								$plus_q = ' AND (utc.team_id= :tid'.$teamid;
+							} else {
+								$plus_q .= ' OR utc.team_id= :tid'.$teamid;
+							}
+						   
+						   
+					  }
+					  $plus_q .= ')';
+					  $users_q .= $plus_q;
+				  }
+				  
+		
 		 $users = $this->pdo->prepare($users_q);
+		 
+						  
+				  
+				if (isset($teams[0]) && $teams[0] != 'All' && $teams[0] != '') {
+						$teamid = -1;
+					  foreach ($teams as $team) {
+						  $teamid++;
+							$users->bindValue(':tid'.$teamid, $team, \PDO::PARAM_INT);
+						   
+					  }
+					  
+				  }
+					 
+		 
+		 
 		 $users->execute();
 		 
 				if ($users->rowCount() > 0) {
@@ -720,12 +789,21 @@ Goals functions
 								if ($pitch->rowCount() > 0) {
 									while($pitches = $pitch->fetch()){
 										
-											$data[$i][0] = $pitches['date_of_pitch'];
-											$data[$i][1] = $pitches['pitches'];
-											$data[$i][2] = $pitches['deals'];
-											$data[$i][3] = $pitches['price'];
-											$data[$i][4] = $pitches['Paid'];
-											$data[$i][3] = $pitches['VIP'];
+											$content['users'][$user[0]]['labels'][$i] = $pitches['date_of_pitch'];
+											$content['users'][$user[0]]['series'][0]['value'][$i] = $pitches['pitches'];
+											$content['users'][$user[0]]['series'][0]['label'] = "Pitched";
+											
+											$content['users'][$user[0]]['series'][1]['value'][$i] = $pitches['deals'];
+											$content['users'][$user[0]]['series'][1]['label'] = "Deals";
+											
+											//$content['users'][$user[0]]['series'][2]['value'][$i] = $pitches['price'];
+											//$content['users'][$user[0]]['series'][2]['label'] = "Price";
+											
+											$content['users'][$user[0]]['series'][2]['value'][$i] = $pitches['Paid'];
+											$content['users'][$user[0]]['series'][2]['label'] = "Paid";
+											
+											$content['users'][$user[0]]['series'][3]['value'][$i] = $pitches['VIP'];
+											$content['users'][$user[0]]['series'][3]['label'] = "VIP";
 
 
 											$username .= $user[1].',';
@@ -785,7 +863,7 @@ Goals functions
 		
 		$pitches = array();	
 		$deals = array();	
-		$price = array();
+		//$price = array();
 		$paid = array();
 		$vip = array();						
 	  foreach ($output as $data) {
@@ -793,7 +871,7 @@ Goals functions
 			
            array_push($pitches, $data['pitch']);
 		   array_push($deals, $data['deals']);
-		   array_push($price, $data['price']);
+		 //  array_push($price, $data['price']);
 		   array_push($paid, $data['paid']);
 		   array_push($vip, $data['vip']);
 		}
@@ -809,10 +887,10 @@ Goals functions
 			
 			array_push($content['series'], $pushdata);
 			
-			$pushdata['label'] = "Price";
-			$pushdata['value'] = $price;
+			//$pushdata['label'] = "Price";
+			//$pushdata['value'] = $price;
 			
-			array_push($content['series'], $pushdata);
+			//array_push($content['series'], $pushdata);
 			
 			$pushdata['label'] = "Paid";
 			$pushdata['value'] = $paid;
@@ -829,9 +907,14 @@ Goals functions
 	 
 	 
  }
-	
 
- public function get_analytics_data($date, $country, $industry) {
+/*
+-------------------------
+Delegates Data
+-------------------------
+*/	
+
+ public function get_analytics_data($date, $country, $teams) {
 	 $content = '';
 	  $all_pitch_num = 0;
 	  $all_deal_num = 0;
@@ -862,8 +945,40 @@ Goals functions
 	  
 	  
 	 
-	 	$users_q = "SELECT id, username FROM users";
+	 	$users_q = "SELECT u.id, u.username FROM users as u, user_team_connection as utc WHERE u.id=utc.user_id";
+					if (isset($teams[0]) && $teams[0] != 'All' && $teams[0] != '') {
+						$teamid = -1;
+					  foreach ($teams as $team) {
+							$teamid ++;
+							if ($teamid == 0){
+								$plus_q = ' AND (utc.team_id= :tid'.$teamid;
+							} else {
+								$plus_q .= ' OR utc.team_id= :tid'.$teamid;
+							}
+						   
+						   
+					  }
+					  $plus_q .= ')';
+					  $users_q .= $plus_q;
+				  }
+				  
+		
 		 $users = $this->pdo->prepare($users_q);
+		 
+						  
+				  
+					if (isset($teams[0]) && $teams[0] != 'All' && $teams[0] != '') {
+						$teamid = -1;
+					  foreach ($teams as $team) {
+						  $teamid++;
+							$users->bindValue(':tid'.$teamid, $team, \PDO::PARAM_INT);
+						   
+					  }
+					  
+				  }
+					 
+		 
+		 
 		 $users->execute();
 		 
 				if ($users->rowCount() > 0) {
@@ -878,7 +993,7 @@ Goals functions
 							
 							//Get basic date about a sponsors
 											   //pitch
-							$pitch_q = "SELECT COUNT(pd.id) as pitches, SUM(pr.deals) as deals, SUM(pr.price) as price, pd.date_of_pitch, (SELECT COUNT(prt.result_type_id) FROM pitch_result as prt, pitch_data as pdt WHERE prt.result_type_id=3 AND pdt.user_id=u.id AND pdt.id=prt.pitch_data_id AND pdt.date_of_pitch=pd.date_of_pitch) as Paid, (SELECT COUNT(prt.result_type_id) FROM pitch_result as prt, pitch_data as pdt WHERE prt.result_type_id=4 AND pdt.user_id=u.id AND pdt.id=prt.pitch_data_id AND pdt.date_of_pitch=pd.date_of_pitch) as VIP FROM users as u, pitch_data as pd, pitch_result as pr, countries as co, delegate_connection as delc WHERE u.id= :id AND u.id=pd.user_id AND pr.pitch_data_id=pd.id AND pd.delegate_id=delc.delegate_id AND delc.country_id=co.id";	
+							$pitch_q = "SELECT COUNT(pd.id) as pitches, SUM(pr.deals) as deals, SUM(pr.price) as price, pd.date_of_pitch, (SELECT COUNT(prt.result_type_id) FROM pitch_result as prt, pitch_data as pdt WHERE prt.result_type_id=3 AND pdt.user_id=u.id AND pdt.id=prt.pitch_data_id AND pdt.date_of_pitch=pd.date_of_pitch) as Paid, (SELECT COUNT(prt.result_type_id) FROM pitch_result as prt, pitch_data as pdt WHERE prt.result_type_id=4 AND pdt.user_id=u.id AND pdt.id=prt.pitch_data_id AND pdt.date_of_pitch=pd.date_of_pitch) as VIP FROM users as u, pitch_data as pd, pitch_result as pr, countries as co, delegate_connection as delc, user_team_connection as utc WHERE u.id= :id AND u.id=pd.user_id AND u.id=utc.user_id AND pr.pitch_data_id=pd.id AND pd.delegate_id=delc.delegate_id AND delc.country_id=co.id";	
 					        //if we (nem jut eszembe, szóval) dátum alapján szűrünk .. oh.. filter.. damn
 							//-----------------------------------------
  					    if (isset($date) && $date != '' && $date != 'All') {
@@ -898,6 +1013,7 @@ Goals functions
 							  
 						  }
 						  
+						  
 						$pitch_q .=' GROUP BY pd.date_of_pitch ORDER BY pd.date';
 						
 					
@@ -913,6 +1029,8 @@ Goals functions
 							 if (isset($country) && $country != -1 && $country != '') {
 							   $pitch->bindValue(':country', $country, \PDO::PARAM_INT);
 							 }
+							 
+
 							
 							 
 							 $pitch->execute();
@@ -1014,8 +1132,12 @@ Goals functions
 	 
  }
  
- 
-  public function get_analytics_data_intervall($date, $country, $industry) {
+/*
+--------------------------------
+Data Intervall
+---------------------------
+*/ 
+  public function get_analytics_data_intervall($date, $country, $teams) {
 	 $content = '';
 	 $year = date('Y');
 	  $all_pitch_num = 0;
@@ -1047,8 +1169,40 @@ Goals functions
 									 ';	
 	  
 	 
-	 	$users_q = "SELECT id, username FROM users";
+	 	$users_q = "SELECT u.id, u.username FROM users as u, user_team_connection as utc WHERE u.id=utc.user_id";
+					if (isset($teams[0]) && $teams[0] != 'All' && $teams[0] != '') {
+						$teamid = -1;
+					  foreach ($teams as $team) {
+							$teamid ++;
+							if ($teamid == 0){
+								$plus_q = ' AND (utc.team_id= :tid'.$teamid;
+							} else {
+								$plus_q .= ' OR utc.team_id= :tid'.$teamid;
+							}
+						   
+						   
+					  }
+					  $plus_q .= ')';
+					  $users_q .= $plus_q;
+				  }
+				  
+		
 		 $users = $this->pdo->prepare($users_q);
+		 
+						  
+				  
+					if (isset($teams[0]) && $teams[0] != 'All' && $teams[0] != '') {
+						$teamid = -1;
+					  foreach ($teams as $team) {
+						  $teamid++;
+							$users->bindValue(':tid'.$teamid, $team, \PDO::PARAM_INT);
+						   
+					  }
+					  
+				  }
+					 
+		 
+		 
 		 $users->execute();
 		 
 				if ($users->rowCount() > 0) {

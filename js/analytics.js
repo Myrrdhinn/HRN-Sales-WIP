@@ -1,6 +1,6 @@
  
  $(document).ready(function(){
-
+	 
    var d = new Date();
     var n = d.getMonth();
 	 n++;
@@ -47,6 +47,11 @@ var days = daysInMonth(n,year); //days on this month
 	   
 	   
 	   $('#Days').bind('change', function (e) {
+		   	var teams = $('#Teams').val();
+				if (typeof teams == 'undefined' && teams[0] != "") {
+					teams = '';
+				}
+		   
 			var month = $('#Months').val();
 			 
 			 if(month == -1 || month == 'All') {
@@ -73,7 +78,7 @@ var days = daysInMonth(n,year); //days on this month
 			  		$.ajax({
 						url: 'controllers/ajax.php',
 						type: 'POST',
-						data: {action:'analytics_date_filter', data:data, country:country},
+						data: {action:'analytics_date_filter', data:data, country:country, teams:teams},
 						success: function(data) {
 							
 							if (data != '' && typeof data != 'undefined'){
@@ -90,7 +95,7 @@ var days = daysInMonth(n,year); //days on this month
 						url: 'controllers/ajax.php',
 						type: 'POST',
 						dataType: "json",
-						data: {action:'analytics_graph_filter', data:data, country:country},
+						data: {action:'analytics_graph_filter', data:data, country:country, teams:teams},
 						success: function(data) {
 							
 							if (data != '' && typeof data != 'undefined'){
@@ -115,6 +120,12 @@ var days = daysInMonth(n,year); //days on this month
 	 -------------
 	 */
 	 $('#Weeks').bind('change', function (e) {
+		 
+		 		var teams = $('#Teams').val();
+				if (typeof teams == 'undefined' && teams[0] != "") {
+					teams = '';
+				}
+		 
 		 
 		  var country = $('#Country').val();
 			
@@ -199,7 +210,7 @@ var days = daysInMonth(n,year); //days on this month
 				  	$.ajax({
 						url: 'controllers/ajax.php',
 						type: 'POST',
-						data: {action:'analytics_date_filter', data:data, country:country},
+						data: {action:'analytics_date_filter', data:data, country:country, teams:teams},
 						success: function(data) {
 							
 							if (data != '' && typeof data != 'undefined'){
@@ -216,7 +227,7 @@ var days = daysInMonth(n,year); //days on this month
 						url: 'controllers/ajax.php',
 						type: 'POST',
 						dataType: "json",
-						data: {action:'analytics_graph_filter', data:data, country:country},
+						data: {action:'analytics_graph_filter', data:data, country:country, teams:teams},
 						success: function(data) {
 							
 							if (data != '' && typeof data != 'undefined'){
@@ -241,7 +252,7 @@ var days = daysInMonth(n,year); //days on this month
 			  		$.ajax({
 						url: 'controllers/ajax.php',
 						type: 'POST',
-						data: {action:'analytics_date_filter_intervall', data:data, country:country},
+						data: {action:'analytics_date_filter_intervall', data:data, country:country, teams:teams},
 						success: function(data) {
 							
 							if (data != '' && typeof data != 'undefined'){
@@ -257,7 +268,7 @@ var days = daysInMonth(n,year); //days on this month
 						url: 'controllers/ajax.php',
 						type: 'POST',
 						dataType: "json",
-						data: {action:'analytics_graph_filter_intervall', data:data, country:country},
+						data: {action:'analytics_graph_filter_intervall', data:data, country:country, teams:teams},
 						success: function(data) {
 							
 							if (data != '' && typeof data != 'undefined'){
@@ -277,7 +288,11 @@ var days = daysInMonth(n,year); //days on this month
      })  
 	 
 	    
-		
+		/*
+		---------
+		Months
+		---------
+		*/
 	   $('#Months').bind('change', function (e) {
 		   	var country = $('#Country').val();
 			
@@ -285,6 +300,12 @@ var days = daysInMonth(n,year); //days on this month
 				 country = '';
 			 }
 			 
+			  var teams = $('#Teams').val();
+				if (typeof teams == 'undefined' && teams[0] != "") {
+					teams = '';
+				}
+			 
+			 console.log(teams);
 		   var month = $(this).val();
 		   
 		   			//delete the old options
@@ -392,7 +413,7 @@ var days = daysInMonth(n,year); //days on this month
 			  		$.ajax({
 						url: 'controllers/ajax.php',
 						type: 'POST',
-						data: {action:'analytics_date_filter', data:data, country:country},
+						data: {action:'analytics_date_filter', data:data, country:country, teams:teams},
 						success: function(data) {
 							
 							if (data != '' && typeof data != 'undefined'){
@@ -408,7 +429,7 @@ var days = daysInMonth(n,year); //days on this month
 						url: 'controllers/ajax.php',
 						type: 'POST',
 						dataType: "json",
-						data: {action:'analytics_graph_filter', data:data, country:country},
+						data: {action:'analytics_graph_filter', data:data, country:country, teams:teams},
 						success: function(data) {
 							
 							if (data != '' && typeof data != 'undefined'){
@@ -427,11 +448,15 @@ var days = daysInMonth(n,year); //days on this month
      }) 
 	 
 	 
-	 //Country change
+	 /*
+	 ----------
+	 Country
+	 ----------
+	 */
 	 $('#Country').bind('change', function (e) {
 				var month = $('#Months').val();
 				
-				 
+
 				 if(month == -1) {
 					 month = '';
 				 }
@@ -442,7 +467,11 @@ var days = daysInMonth(n,year); //days on this month
 					 days = '';
 				 }
 			  
-			
+			  var teams = $('#Teams').val();
+				if (typeof teams == 'undefined' && teams[0] != "") {
+					teams = '';
+				}
+				 
 		  
 		  var country = $(this).val();
 		  
@@ -471,7 +500,7 @@ var days = daysInMonth(n,year); //days on this month
 					$.ajax({
 						url: 'controllers/ajax.php',
 						type: 'POST',
-						data: {action:'analytics_date_filter_intervall', data:data, country:country},
+						data: {action:'analytics_date_filter_intervall', data:data, country:country, teams:teams},
 						success: function(data) {
 							
 							if (data != '' && typeof data != 'undefined'){
@@ -488,7 +517,7 @@ var days = daysInMonth(n,year); //days on this month
 						url: 'controllers/ajax.php',
 						type: 'POST',
 						dataType: "json",
-						data: {action:'analytics_graph_filter_intervall', data:data, country:country},
+						data: {action:'analytics_graph_filter_intervall', data:data, country:country, teams:teams},
 						success: function(data) {
 							
 							if (data != '' && typeof data != 'undefined'){
@@ -512,7 +541,7 @@ var days = daysInMonth(n,year); //days on this month
 							$.ajax({
 								url: 'controllers/ajax.php',
 								type: 'POST',
-								data: {action:'analytics_date_filter', data:data, country:country},
+								data: {action:'analytics_date_filter', data:data, country:country, teams:teams},
 								success: function(data) {
 									
 									if (data != '' && typeof data != 'undefined'){
@@ -530,7 +559,7 @@ var days = daysInMonth(n,year); //days on this month
 						url: 'controllers/ajax.php',
 						type: 'POST',
 						dataType: "json",
-						data: {action:'analytics_graph_filter', data:data, country:country},
+						data: {action:'analytics_graph_filter', data:data, country:country, teams:teams},
 						success: function(data) {
 							
 							if (data != '' && typeof data != 'undefined'){
@@ -545,6 +574,138 @@ var days = daysInMonth(n,year); //days on this month
 			  }//if not intervall else ends
 			  
 		  }//type of country not undefined
+	
+     })  
+	 
+	 /*
+	 -----------
+	 Teams
+	 -----------
+	 */
+	 
+	 $('#Teams').bind('change', function (e) {
+		   var teams = $(this).val();
+		   
+		   var month = $('#Months').val();
+				
+				 
+				 if(month == -1) {
+					 month = '';
+				 }
+				 
+				var days = $('#Days').val();
+				 
+				 if(days == -1 || days == 'All') {
+					 days = '';
+				 }
+			  
+			
+		  
+		  var country = $('#Country').val();
+		  
+		  if (typeof teams != 'undefined') {
+			  
+			  if (country == 'All' || typeof country == "undefined") {
+				    country = ''; 
+			  }
+			  var weeks = $('#Weeks').val();
+			  
+			  
+			  if(days == '' && typeof weeks != 'undefined' && weeks != 'All' && weeks != '' && weeks !=-1 && month != 'All') {
+				  if (month != '') {
+					  month = getMonthFromString(month);
+				  } else {
+				    var d = new Date();
+                    var n = d.getMonth();
+	                   n++;
+				       month = n;
+					  
+				  }
+				   
+			        var data = 'intervall,'+weeks+','+month; 
+
+					
+					$.ajax({
+						url: 'controllers/ajax.php',
+						type: 'POST',
+						data: {action:'analytics_date_filter_intervall', data:data, country:country, teams:teams},
+						success: function(data) {
+							
+							if (data != '' && typeof data != 'undefined'){
+                                 $('#MainAnalContent').html(data);
+								 
+							}
+							
+						}
+					});
+					
+										/*Graph*/
+					
+								  		$.ajax({
+						url: 'controllers/ajax.php',
+						type: 'POST',
+						dataType: "json",
+						data: {action:'analytics_graph_filter_intervall', data:data, country:country, teams:teams},
+						success: function(data) {
+							
+							if (data != '' && typeof data != 'undefined'){
+                                 show_graph(data);								
+								 allofit.data = data;							
+								 
+							}
+							
+						}
+					});
+			  
+		    }  else {
+					 //if the weeks in undefined or not specified
+					if ((month == '' && days == '') || month == 'All' || days == 'All') {
+						 var data = 'All'; 
+					} else {
+						var data = '%'+days+' '+month+'%'; 	
+					}
+					  
+					  
+							$.ajax({
+								url: 'controllers/ajax.php',
+								type: 'POST',
+								data: {action:'analytics_date_filter', data:data, country:country, teams:teams},
+								success: function(data) {
+									
+									if (data != '' && typeof data != 'undefined'){
+										 $('#MainAnalContent').html(data);
+										 
+									}
+									
+								}
+							});
+							
+							
+												/*Graph*/
+					
+								  		$.ajax({
+						url: 'controllers/ajax.php',
+						type: 'POST',
+						dataType: "json",
+						data: {action:'analytics_graph_filter', data:data, country:country, teams:teams},
+						success: function(data) {
+							
+							if (data != '' && typeof data != 'undefined'){
+                                 show_graph(data);								
+								 allofit.data = data;							
+								 
+							}
+							
+						}
+					});
+					
+			  }//if not intervall else ends
+			  
+		  }//type of country not undefined
+		   
+		   
+		   
+				
 	
      })  
 	   

@@ -229,7 +229,7 @@ margin-top: 3vw;
 }
 
 .SelectClass {
-	max-width:9vw;	
+	max-width:140px;	
 }
 
 @media (max-width: 600px){
@@ -254,4 +254,23 @@ margin-top: 3vw;
   position: absolute;
   left: 40px;
 	
+}
+
+/*Filter Containers*/
+.DateFilterContainer {
+	  display: inline-block;
+      width: 600px;
+}
+
+.CountryFilterContainer {
+	display: inline-block;
+}
+
+#TeamFilterLabel {
+	display:inline-block;	
+	margin-right: 30px;
+}
+
+.TeamCompareContainer {
+	display:inline-block;	
 }

@@ -1,12 +1,13 @@
 $(document).ready(function(){ 
 var data = '';
 var country = '';
+var teams = '';
 
 			  		$.ajax({
 						url: 'controllers/ajax.php',
 						type: 'POST',
 						dataType: "json",
-						data: {action:'analytics_graph_filter', data:data, country:country},
+						data: {action:'analytics_graph_filter', data:data, country:country, teams:teams},
 						success: function(data) {
 							
 							if (data != '' && typeof data != 'undefined'){

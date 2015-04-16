@@ -145,9 +145,35 @@ if (isset($_SESSION['admin'])) {
 	   <select id="Country" class="SelectClass">
 			<option value="All">All</option>';
            $content .= $main->get_countries('');
-	  $content .=' </select>            
-      </div>
-   '; 
+	  $content .=' </select>        
+      </div>';
+	  
+	  $content .='<div class="TeamFilterContainer">
+	  	   <label id="TeamFilterLabel">Filter by Team(s):<br /><select multiple="multiple" id="Teams" class="SelectClass">';
+				
+			  
+			  $content .= $main->get_teams();
+			  $content .='
+				</select> </label>';
+				
+					  	  $content .='<div class="TeamCompareContainer">
+	  	   <label>Compare Teams:<br /><select multiple="multiple" id="Compare" class="SelectClass">';
+				
+			  
+			  $content .= $main->get_teams();
+			  $content .='
+				</select> </label>   
+				
+				
+	  
+	  </div>   
+				
+				
+	  
+	  </div>'; 
+	  
+	  
+
    
    // $content .= $main->get_analytics_filters();
    
