@@ -82,12 +82,14 @@ if (isset($_SESSION['user'])) {
 		 $content .="'img/icons/analytics.png';";
 		 $content .='" ></a>';
 		 
+		 if ($_SESSION['admin'] < 2) {
+		 
 		 $content .= '<a href="calls" title="Call Rates"><img class="MenuIcon" src="img/icons/calls.png" onmouseover="this.src=';
 		 $content .="'img/icons/calls_hover.png';";
 		 $content .='" onmouseout="this.src=';
 		 $content .="'img/icons/calls.png';";
 		 $content .='" ></a>';
-	 
+		 }
 	}
 	 
 	

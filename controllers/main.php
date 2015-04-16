@@ -388,6 +388,41 @@ public function save_call_number() {
 	
 }
 
+public function save_minutes_number() {
+	
+	if (isset($_POST['num'])) {
+		   $get_call = "SELECT minutes FROM user_calls WHERE user_id = :user_id AND call_date = CURDATE()";
+		   $call = $this->pdo->prepare($get_call);
+		   $call->bindValue(':user_id', $_POST['id'], \PDO::PARAM_INT);
+		   $call->execute();
+		   
+		  if ($call->rowCount() > 0) {
+				 $insert_call = "UPDATE user_calls SET minutes = :minutes WHERE user_id = :user_id AND call_date = CURDATE()";
+				 $call2 = $this->pdo->prepare($insert_call);
+				 $call2->bindValue(':minutes', $_POST['num'], \PDO::PARAM_INT);
+				 $call2->bindValue(':user_id', $_POST['id'], \PDO::PARAM_INT);
+				 $call2->execute();
+		  } else {
+				 $insert_call = "INSERT INTO user_calls SET user_id = :id, call_date = CURDATE(), minutes = :minutes";
+				 $call2 = $this->pdo->prepare($insert_call);
+				 $call2->bindValue(':id', $_POST['id'], \PDO::PARAM_INT);
+				 $call2->bindValue(':minutes', $_POST['num'], \PDO::PARAM_INT);
+				 $call2->execute();
+				 
+			  
+		  }
+		
+		
+		
+
+		   
+			 return 'Success';
+			 
+			 
+	}
+
+	
+}
 
 /*
 -------------------------------
@@ -467,8 +502,13 @@ Graph data
 	  $z = 0;
 	  
       $content['users'] = array();
+	  
+	  if(isset($_SESSION['admin']) && $_SESSION['admin'] > 1) {
+		  unset($teams);
+		  $teams[0] = $_SESSION['team_id'];
+	  }
 	 
-	 	$users_q = "SELECT u.id, u.username FROM users as u, user_team_connection as utc WHERE u.id=utc.user_id";
+	 	$users_q = "SELECT u.id, u.username FROM users as u, user_team_connection as utc WHERE u.id=utc.user_id AND u.rank <> 0";
 				if (isset($teams[0]) && $teams[0] != 'All' && $teams[0] != '') {
 						$teamid = -1;
 					  foreach ($teams as $team) {
@@ -516,7 +556,7 @@ Graph data
 							
 							//Get basic date about a sponsors
 											   //pitch
-							$pitch_q = "SELECT COUNT(pd.id) as pitches, SUM(pr.deals) as deals, SUM(pr.price) as price, pd.date_of_pitch, (SELECT COUNT(prt.result_type_id) FROM pitch_result as prt, pitch_data as pdt WHERE prt.result_type_id=3 AND pdt.user_id=u.id AND pdt.id=prt.pitch_data_id AND pdt.date_of_pitch=pd.date_of_pitch) as Paid, (SELECT COUNT(prt.result_type_id) FROM pitch_result as prt, pitch_data as pdt WHERE prt.result_type_id=4 AND pdt.user_id=u.id AND pdt.id=prt.pitch_data_id AND pdt.date_of_pitch=pd.date_of_pitch) as VIP FROM users as u, pitch_data as pd, pitch_result as pr, countries as co, delegate_connection as delc WHERE u.id= :id AND u.id=pd.user_id AND pr.pitch_data_id=pd.id AND pd.delegate_id=delc.delegate_id AND delc.country_id=co.id";	
+							$pitch_q = "SELECT COUNT(pd.id) as pitches, SUM(pr.deals) as deals, SUM(pr.price) as price, pd.date_of_pitch, (SELECT COUNT(prt.result_type_id) FROM pitch_result as prt, pitch_data as pdt WHERE prt.result_type_id=3 AND pdt.user_id=u.id AND pdt.id=prt.pitch_data_id AND pdt.date_of_pitch=pd.date_of_pitch) as Paid, (SELECT COUNT(prt.result_type_id) FROM pitch_result as prt, pitch_data as pdt WHERE prt.result_type_id=4 AND pdt.user_id=u.id AND pdt.id=prt.pitch_data_id AND pdt.date_of_pitch=pd.date_of_pitch) as VIP FROM users as u, pitch_data as pd, pitch_result as pr, countries as co, delegate_connection as delc WHERE u.id= :id AND u.rank <> 0 AND u.id=pd.user_id AND pr.pitch_data_id=pd.id AND pd.delegate_id=delc.delegate_id AND delc.country_id=co.id";	
 					        //if we (nem jut eszembe, szóval) dátum alapján szűrünk .. oh.. filter.. damn
 							//-----------------------------------------
  					    if (isset($date) && $date != '' && $date != 'All') {
@@ -691,8 +731,13 @@ Graph Data Intervall
 	  $all_total_VIP = 0;
 	  $username = '';
 	  $z = 0;
+	  
+	  	  if(isset($_SESSION['admin']) && $_SESSION['admin'] > 1) {
+		  unset($teams);
+		  $teams[0] = $_SESSION['team_id'];
+	  }
 	 
-	 	$users_q = "SELECT u.id, u.username FROM users as u, user_team_connection as utc WHERE u.id=utc.user_id";
+	 	$users_q = "SELECT u.id, u.username FROM users as u, user_team_connection as utc WHERE u.id=utc.user_id AND u.rank <> 0";
 					if (isset($teams[0]) && $teams[0] != 'All' && $teams[0] != '') {
 						$teamid = -1;
 					  foreach ($teams as $team) {
@@ -752,7 +797,7 @@ Graph Data Intervall
 							
 							//Get basic date about a sponsors
 											   //pitch
-							$pitch_q = "SELECT COUNT(pd.id) as pitches, SUM(pr.deals) as deals, SUM(pr.price) as price, pd.date_of_pitch, (SELECT COUNT(prt.result_type_id) FROM pitch_result as prt, pitch_data as pdt WHERE prt.result_type_id=3 AND pdt.user_id=u.id AND pdt.id=prt.pitch_data_id AND pdt.date_of_pitch=pd.date_of_pitch) as Paid, (SELECT COUNT(prt.result_type_id) FROM pitch_result as prt, pitch_data as pdt WHERE prt.result_type_id=4 AND pdt.user_id=u.id AND pdt.id=prt.pitch_data_id AND pdt.date_of_pitch=pd.date_of_pitch) as VIP FROM users as u, pitch_data as pd, pitch_result as pr, countries as co, delegate_connection as delc WHERE u.id= :id AND u.id=pd.user_id AND pr.pitch_data_id=pd.id AND pd.delegate_id=delc.delegate_id AND delc.country_id=co.id AND pd.date BETWEEN :start AND :end";	
+							$pitch_q = "SELECT COUNT(pd.id) as pitches, SUM(pr.deals) as deals, SUM(pr.price) as price, pd.date_of_pitch, (SELECT COUNT(prt.result_type_id) FROM pitch_result as prt, pitch_data as pdt WHERE prt.result_type_id=3 AND pdt.user_id=u.id AND pdt.id=prt.pitch_data_id AND pdt.date_of_pitch=pd.date_of_pitch) as Paid, (SELECT COUNT(prt.result_type_id) FROM pitch_result as prt, pitch_data as pdt WHERE prt.result_type_id=4 AND pdt.user_id=u.id AND pdt.id=prt.pitch_data_id AND pdt.date_of_pitch=pd.date_of_pitch) as VIP FROM users as u, pitch_data as pd, pitch_result as pr, countries as co, delegate_connection as delc WHERE u.id= :id AND u.rank <> 0 AND u.id=pd.user_id AND pr.pitch_data_id=pd.id AND pd.delegate_id=delc.delegate_id AND delc.country_id=co.id AND pd.date BETWEEN :start AND :end";	
 							
 							 //if we filter (;)) based on country
 						  //-------------------------------
@@ -914,6 +959,17 @@ Delegates Data
 -------------------------
 */	
 
+
+/*
+///////For DEV Purposes:
+
+SELECT utc.team_id, COUNT(pd.id) as pitches, SUM(pr.deals) as deals, SUM(pr.price) as price, pd.date_of_pitch, (SELECT COUNT(prt.result_type_id) FROM pitch_result as prt, pitch_data as pdt WHERE prt.result_type_id=3 AND pdt.user_id=u.id AND pdt.id=prt.pitch_data_id AND pdt.date_of_pitch=pd.date_of_pitch) as Paid, (SELECT COUNT(prt.result_type_id) FROM pitch_result as prt, pitch_data as pdt WHERE prt.result_type_id=4 AND pdt.user_id=u.id AND pdt.id=prt.pitch_data_id AND pdt.date_of_pitch=pd.date_of_pitch) as VIP FROM users as u, pitch_data as pd, pitch_result as pr, countries as co, delegate_connection as delc, user_team_connection as utc WHERE u.id=pd.user_id AND u.id=utc.user_id AND pr.pitch_data_id=pd.id AND pd.delegate_id=delc.delegate_id AND delc.country_id=co.id GROUP BY pd.date_of_pitch, utc.team_id ORDER BY pd.date
+
+This is a query for getting data grouped by teams rather than individual users
+
+*/
+
+
  public function get_analytics_data($date, $country, $teams) {
 	 $content = '';
 	  $all_pitch_num = 0;
@@ -942,10 +998,13 @@ Delegates Data
 								  </div>							 
 									 ';	
 	  
-	  
+	  	  if(isset($_SESSION['admin']) && $_SESSION['admin'] > 1) {
+		  unset($teams);
+		  $teams[0] = $_SESSION['team_id'];
+	  }
 	  
 	 
-	 	$users_q = "SELECT u.id, u.username FROM users as u, user_team_connection as utc WHERE u.id=utc.user_id";
+	 	$users_q = "SELECT u.id, u.username FROM users as u, user_team_connection as utc WHERE u.id=utc.user_id AND u.rank <> 0";
 					if (isset($teams[0]) && $teams[0] != 'All' && $teams[0] != '') {
 						$teamid = -1;
 					  foreach ($teams as $team) {
@@ -993,7 +1052,7 @@ Delegates Data
 							
 							//Get basic date about a sponsors
 											   //pitch
-							$pitch_q = "SELECT COUNT(pd.id) as pitches, SUM(pr.deals) as deals, SUM(pr.price) as price, pd.date_of_pitch, (SELECT COUNT(prt.result_type_id) FROM pitch_result as prt, pitch_data as pdt WHERE prt.result_type_id=3 AND pdt.user_id=u.id AND pdt.id=prt.pitch_data_id AND pdt.date_of_pitch=pd.date_of_pitch) as Paid, (SELECT COUNT(prt.result_type_id) FROM pitch_result as prt, pitch_data as pdt WHERE prt.result_type_id=4 AND pdt.user_id=u.id AND pdt.id=prt.pitch_data_id AND pdt.date_of_pitch=pd.date_of_pitch) as VIP FROM users as u, pitch_data as pd, pitch_result as pr, countries as co, delegate_connection as delc, user_team_connection as utc WHERE u.id= :id AND u.id=pd.user_id AND u.id=utc.user_id AND pr.pitch_data_id=pd.id AND pd.delegate_id=delc.delegate_id AND delc.country_id=co.id";	
+							$pitch_q = "SELECT COUNT(pd.id) as pitches, SUM(pr.deals) as deals, SUM(pr.price) as price, pd.date_of_pitch, (SELECT COUNT(prt.result_type_id) FROM pitch_result as prt, pitch_data as pdt WHERE prt.result_type_id=3 AND pdt.user_id=u.id AND pdt.id=prt.pitch_data_id AND pdt.date_of_pitch=pd.date_of_pitch) as Paid, (SELECT COUNT(prt.result_type_id) FROM pitch_result as prt, pitch_data as pdt WHERE prt.result_type_id=4 AND pdt.user_id=u.id AND pdt.id=prt.pitch_data_id AND pdt.date_of_pitch=pd.date_of_pitch) as VIP FROM users as u, pitch_data as pd, pitch_result as pr, countries as co, delegate_connection as delc, user_team_connection as utc WHERE u.id= :id AND u.rank <> 0 AND u.id=pd.user_id AND u.id=utc.user_id AND pr.pitch_data_id=pd.id AND pd.delegate_id=delc.delegate_id AND delc.country_id=co.id";	
 					        //if we (nem jut eszembe, szóval) dátum alapján szűrünk .. oh.. filter.. damn
 							//-----------------------------------------
  					    if (isset($date) && $date != '' && $date != 'All') {
@@ -1147,6 +1206,11 @@ Data Intervall
 	  $all_total_paid = 0;
 	  $all_total_VIP = 0;
 	  
+	  	  if(isset($_SESSION['admin']) && $_SESSION['admin'] > 1) {
+		  unset($teams);
+		  $teams[0] = $_SESSION['team_id'];
+	  }
+	  
 	  
 	  								 $content .= '
 							  <!--The main wrapper -->
@@ -1169,7 +1233,7 @@ Data Intervall
 									 ';	
 	  
 	 
-	 	$users_q = "SELECT u.id, u.username FROM users as u, user_team_connection as utc WHERE u.id=utc.user_id";
+	 	$users_q = "SELECT u.id, u.username FROM users as u, user_team_connection as utc WHERE u.id=utc.user_id AND u.rank <> 0";
 					if (isset($teams[0]) && $teams[0] != 'All' && $teams[0] != '') {
 						$teamid = -1;
 					  foreach ($teams as $team) {
@@ -1225,7 +1289,7 @@ Data Intervall
 							
 							//Get basic date about a sponsors
 											   //pitch
-							$pitch_q = "SELECT COUNT(pd.id) as pitches, SUM(pr.deals) as deals, SUM(pr.price) as price, pd.date_of_pitch, (SELECT COUNT(prt.result_type_id) FROM pitch_result as prt, pitch_data as pdt WHERE prt.result_type_id=3 AND pdt.user_id=u.id AND pdt.id=prt.pitch_data_id AND pdt.date_of_pitch=pd.date_of_pitch) as Paid, (SELECT COUNT(prt.result_type_id) FROM pitch_result as prt, pitch_data as pdt WHERE prt.result_type_id=4 AND pdt.user_id=u.id AND pdt.id=prt.pitch_data_id AND pdt.date_of_pitch=pd.date_of_pitch) as VIP FROM users as u, pitch_data as pd, pitch_result as pr, countries as co, delegate_connection as delc WHERE u.id= :id AND u.id=pd.user_id AND pr.pitch_data_id=pd.id AND pd.delegate_id=delc.delegate_id AND delc.country_id=co.id AND pd.date BETWEEN :start AND :end";	
+							$pitch_q = "SELECT COUNT(pd.id) as pitches, SUM(pr.deals) as deals, SUM(pr.price) as price, pd.date_of_pitch, (SELECT COUNT(prt.result_type_id) FROM pitch_result as prt, pitch_data as pdt WHERE prt.result_type_id=3 AND pdt.user_id=u.id AND pdt.id=prt.pitch_data_id AND pdt.date_of_pitch=pd.date_of_pitch) as Paid, (SELECT COUNT(prt.result_type_id) FROM pitch_result as prt, pitch_data as pdt WHERE prt.result_type_id=4 AND pdt.user_id=u.id AND pdt.id=prt.pitch_data_id AND pdt.date_of_pitch=pd.date_of_pitch) as VIP FROM users as u, pitch_data as pd, pitch_result as pr, countries as co, delegate_connection as delc WHERE u.id= :id AND u.rank <> 0 AND u.id=pd.user_id AND pr.pitch_data_id=pd.id AND pd.delegate_id=delc.delegate_id AND delc.country_id=co.id AND pd.date BETWEEN :start AND :end";	
 							
 							 //if we filter (;)) based on country
 						  //-------------------------------
@@ -1357,7 +1421,7 @@ public function get_callbacks($admin) {
 	  $content = '<option value="" hidden="hidden" selected="selected">Select a Call Back Date</option>'; 
        $content .= '<option value="All">All</option>'; 
 	 
-		 $country_q = "SELECT pr.callback_date FROM pitch_result as pr, pitch_data as pd, user_team_connection as utc WHERE pd.id=pr.pitch_data_id AND pd.user_id=utc.user_id";
+		 $country_q = "SELECT pr.callback_date FROM pitch_result as pr, pitch_data as pd, user_team_connection as utc, users as u WHERE pd.id=pr.pitch_data_id AND pd.user_id=utc.user_id AND utc.user_id=u.id AND u.rank <> 0";
 		 if ($admin > 2) {
 			 $country_q .= " AND pd.user_id= :id";
 		 }
@@ -1413,7 +1477,7 @@ public function get_team_members($team_id) {
 	  $content = '<option value="" hidden="hidden" selected="selected">Select a Team Member</option>'; 
        $content .= '<option value="All">All</option>'; 
 	 
-		 $country_q = "SELECT u.id, u.username FROM users as u, user_team_connection as utc WHERE u.id=utc.user_id";
+		 $country_q = "SELECT u.id, u.username FROM users as u, user_team_connection as utc WHERE u.id=utc.user_id AND u.rank <> 0";
 		 
 		 if ($_SESSION['admin'] == 2 || (isset($team_id) && $team_id != '')) {
 			$country_q .= ' AND utc.team_id = :id'; 
@@ -1459,13 +1523,22 @@ public function get_teams() {
 	$selected = '';
 	
 	  $content = '<option value="" hidden="hidden" selected="selected">Select a Team</option>'; 
-       $content .= '<option value="All">All</option>'; 
+	  		       if ($_SESSION['admin'] < 1) {
+					   $content .= '<option value="All">All</option>'; 
+				   }
+     
 	 
 		 $country_q = "SELECT id, team_name FROM teams";
-		 
+		           if ($_SESSION['admin'] > 1) {
+					  $country_q .= " WHERE id = :id"; 
+				   }
 
 		 $countries = $this->pdo->prepare($country_q);
-
+		 
+		 
+		           if ($_SESSION['admin'] > 1) {
+					 $countries->bindValue(':id', $_SESSION['team_id'], \PDO::PARAM_INT);
+				   }
 
 		 $countries->execute();
 		 
@@ -1498,15 +1571,15 @@ public function list_calls($user) {
 	$username = '';
 	if (isset($user) && $user != '' && $user != 'All') {
 		$plus_content = 1;
-		$content .= '<div style="width:340px; display:inline-block;" id="CallsContainer">';
+		$content .= '<div style="width:450px; display:inline-block;" id="CallsContainer">';
 	}else {
 	    $content .= '<div id="CallsContainer">';	
 	}
 	
 	
-		$users_q = "SELECT id, username FROM users";
+		$users_q = "SELECT id, username FROM users WHERE rank <> 0";
 		if (isset($user) && $user != '' && $user != 'All') {
-			$users_q .= " WHERE id= :id";
+			$users_q .= " AND id= :id";
 		}
 		
 		 $users = $this->pdo->prepare($users_q);
@@ -1531,6 +1604,7 @@ public function list_calls($user) {
 						   		$content .='<li>
 							     <div class="DateLi">Date</div>
 								 <div>Calls</div>
+								 <div>Minutes</div>
 								 <div>Pitches</div>
 								 <div>Deals</div>
 							        </li>';
@@ -1544,7 +1618,7 @@ public function list_calls($user) {
 					
 					while($date = $dates->fetch()) {
 						
-						 $data_q = "SELECT uc.calls as Calls, SUM(pr.deals) as Deals, COUNT(pd.id) as Pitches, pd.date_of_pitch as Date FROM user_calls as uc, pitch_result as pr, pitch_data as pd WHERE pd.user_id= :user_id AND pd.user_id=uc.user_id AND pr.pitch_data_id=pd.id AND DATE(pd.date)=DATE(uc.date) AND DATE(pd.date)= :date GROUP BY uc.call_date ORDER BY uc.date DESC";
+						 $data_q = "SELECT uc.calls as Calls, uc.minutes, SUM(pr.deals) as Deals, COUNT(pd.id) as Pitches, pd.date_of_pitch as Date FROM user_calls as uc, pitch_result as pr, pitch_data as pd WHERE pd.user_id= :user_id AND pd.user_id=uc.user_id AND pr.pitch_data_id=pd.id AND DATE(pd.date)=DATE(uc.date) AND DATE(pd.date)= :date GROUP BY uc.call_date ORDER BY uc.date DESC";
 						 
 						 $data = $this->pdo->prepare($data_q);
 						 $data->bindValue(':user_id', $user['id'], \PDO::PARAM_INT);
@@ -1557,6 +1631,7 @@ public function list_calls($user) {
 								   $content .='<li>
 									 <div class="DateLi">'.$info['Date'].'</div>
 									 <div>'.$info['Calls'].'</div>
+									 <div>'.$info['minutes'].'</div>
 									 <div>'.$info['Pitches'].'</div>
 									 <div>'.$info['Deals'].'</div>
 										</li>';
@@ -1566,7 +1641,7 @@ public function list_calls($user) {
 								
 							} else {// if date row count
 							
-								$calls_q = "SELECT uc.calls FROM user_calls as uc WHERE uc.user_id= :user_id AND DATE(uc.date)= :date";
+								$calls_q = "SELECT uc.calls, uc.minutes FROM user_calls as uc WHERE uc.user_id= :user_id AND DATE(uc.date)= :date";
 								 
 								 $calls = $this->pdo->prepare($calls_q);
 								 $calls->bindValue(':user_id', $user['id'], \PDO::PARAM_INT);
@@ -1579,6 +1654,7 @@ public function list_calls($user) {
 										 $content .='<li>
 										   <div class="DateLi">'.$date['date_of_pitch'].'</div>
 										   <div>'.$call['calls'].'</div>
+										   <div>'.$call['minutes'].'</div>
 										   <div> - </div>
 										   <div> - </div>
 											  </li>';
@@ -1589,6 +1665,7 @@ public function list_calls($user) {
 							     } else {//if calls row count
 								 		 $content .='<li>
 										   <div class="DateLi">'.$date['date_of_pitch'].'</div>
+										   <div> - </div>
 										   <div> - </div>
 										   <div> - </div>
 										   <div> - </div>
@@ -1616,7 +1693,7 @@ public function list_calls($user) {
 		if ($plus_content == 1) {
 		$today = date('Y-m-d');	
 			
-			$today_q = "SELECT uc.calls FROM user_calls as uc WHERE uc.user_id= :user_id AND DATE(uc.date)= :date";
+			$today_q = "SELECT uc.calls, uc.minutes FROM user_calls as uc WHERE uc.user_id= :user_id AND DATE(uc.date)= :date";
 			 
 			 $calls = $this->pdo->prepare($today_q);
 			 $calls->bindValue(':user_id', $user_id, \PDO::PARAM_INT);
@@ -1627,8 +1704,10 @@ public function list_calls($user) {
 
 				  $call = $calls->fetch();
 			      $call_num = $call['calls'];
+				  $min_num = $call['minutes'];
 			 } else {
-				$call_num = 0; 
+				$call_num = 0;
+				$min_num = 0; 
 			 }
 			
 			
@@ -1638,8 +1717,12 @@ public function list_calls($user) {
 				
 				   <label>Calls made by '.$username.' today:<br /><input id="CallInputField" class="AdminInputField" type="text" placeholder="Call number" value="'.$call_num.'" /></label>
 				   <button onClick="save_call_num('.$user_id.');" id="CallSubmit" class="AdminSubmitButton">Change</button>
-
+				   
+				   <label>Minutes spoken by '.$username.' today:<br /><input id="MinutesInputField" class="AdminInputField" type="text" placeholder="Call number" value="'.$min_num.'" /></label>
+				   <button onClick="save_minutes_num('.$user_id.');" id="MinutesSubmit" class="AdminSubmitButton">Change</button>
 			   </div>';
+			   
+			   
 		}
 		
 		

@@ -41,6 +41,22 @@ Save number of calls
 
 
 /*///////////// 
+Save number of minutes
+///////////////*/
+
+
+ if(isset($_POST['action']) && $_POST['action'] == 'save_minutes_num'){
+	$the_main = new main\main;
+    $result = $the_main->save_minutes_number();
+	if (isset($result)) {
+	  $_SESSION['Result'] =  'Success';
+	  echo 'Success';	
+	}
+
+}// save Pitch data
+
+
+/*///////////// 
 Pitch edit request
 ///////////////*/
 

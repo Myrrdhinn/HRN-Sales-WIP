@@ -64,7 +64,7 @@ if (isset($_SESSION['admin'])) {
   
    // $content .='<p class="WelcomeTexT">Change the desirable goals:</p>';
   
-  }
+  
   
    $content .='
    <div id="FilterContainer">';
@@ -147,6 +147,7 @@ if (isset($_SESSION['admin'])) {
            $content .= $main->get_countries('');
 	  $content .=' </select>        
       </div>';
+	  if (isset($_SESSION['admin'])) {
 	  
 	  $content .='<div class="TeamFilterContainer">
 	  	   <label id="TeamFilterLabel">Filter by Team(s):<br /><select multiple="multiple" id="Teams" class="SelectClass">';
@@ -157,7 +158,7 @@ if (isset($_SESSION['admin'])) {
 				</select> </label>';
 				
 					  	  $content .='<div class="TeamCompareContainer">
-	  	   <label>Compare Teams:<br /><select multiple="multiple" id="Compare" class="SelectClass">';
+	  	   <label>Work in Progress<br /><select multiple="multiple" id="Compare" class="SelectClass">';
 				
 			  
 			  $content .= $main->get_teams();
@@ -173,7 +174,7 @@ if (isset($_SESSION['admin'])) {
 	  </div>'; 
 	  
 	  
-
+	  }
    
    // $content .= $main->get_analytics_filters();
    
@@ -184,8 +185,16 @@ if (isset($_SESSION['admin'])) {
      $content .='
 	 <!-- ;) -->
 	 <div id="MainAnalContent">';
+	 
+	 if ($_SESSION['admin'] > 2){
+		 $team_id[0] = $_SESSION['team_id'];
+		 $content .= $main->get_analytics_data('','',''); 
+	 } else {
+		$content .= $main->get_analytics_data('','','');  
+	 }
+	 
   
-     $content .= $main->get_analytics_data('','',''); 
+     
 	   //$content .= $main->get_analytics_graph_data('','',''); 
 
    $content .='</div>';
@@ -199,7 +208,7 @@ if (isset($_SESSION['admin'])) {
 	</div>
 	';  
    }
-
+   }
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">

@@ -49,7 +49,7 @@ use HRNSales\pitches as pitches;
 	<!--Form container-->
 	 <div id="container">';
 	 
-	 	if (isset($_SESSION['user'])) {
+	 	if (isset($_SESSION['admin']) && $_SESSION['admin'] < 2) {
 			include_once('controllers/main.php');
 			include_once('controllers/pitches.php');
 			$main = new main\main;

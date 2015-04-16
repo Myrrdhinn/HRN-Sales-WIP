@@ -27,12 +27,12 @@
 }
 
 
-#CallInputField {
+#CallInputField, #MinutesInputField {
 	max-width:150px;
 	display: inline-block;	
 }
 
-#CallSubmit {
+#CallSubmit, #MinutesSubmit {
 	display: inline-block;
 	max-width:150px;
 	
