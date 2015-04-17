@@ -21,7 +21,7 @@ use HRNSales\main as main;
 	  <h1 class="WrapperMainH1">HR Tech Europe - Sales | Main Page</h1>
 	  
 	  <p class="WelcomeTexT">Welcome to the Sales Page Interface of <br> HR Tech Europe</p>
-	   <p class="WelcomeTexT"> Please select the page where you want go or change the number of calls you made this day:</p>
+	   <p class="WelcomeTexT"> Please select the page where you want go:</p>
 	   
 	<!--Form container-->
 	 <div id="container">';

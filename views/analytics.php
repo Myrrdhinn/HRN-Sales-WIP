@@ -157,7 +157,7 @@ if (isset($_SESSION['admin'])) {
 			  $content .='
 				</select> </label>';
 				
-					  	  $content .='<div class="TeamCompareContainer">
+					  	  $content .='<div style="display:none" class="TeamCompareContainer">
 	  	   <label>Work in Progress<br /><select multiple="multiple" id="Compare" class="SelectClass">';
 				
 			  

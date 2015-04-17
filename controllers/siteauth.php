@@ -55,8 +55,6 @@ public function login($username, $password) {
 						   
 						   $_SESSION['user'] = true;
 						   
-						   setcookie("Moo", $pass['id'], time()+3600*8);
-						   
 						   $_SESSION['user_id'] = $pass['id'];
 						   
 						   if ($pass['rank'] < 3) {
@@ -188,7 +186,7 @@ public function login($username, $password) {
 						} //passwords don't mach else ends
 				
 				} else { //personal num rows if end  (If we don't even find the user in the db)
-				$out = '<p class="LoginResponse"><i class="fa fa-times"></i> No such user</p>';
+				$out = '<p class="LoginResponse"><i class="fa fa-times"></i> Incorrect username or password</p>';
 							return $out;
 				}//username not found else ends
 			

@@ -27,7 +27,7 @@ use HRNSales\pitches as pitches;
 <body>
  <!--Main Wrapper-->
 	<div class="wrapper">
-	  <h1 class="WrapperMainH1">HR Tech Europe - Sales Page |<br /> Pitch List</h1>
+	  <h1 class="WrapperMainH1">HR Tech Europe - Sales Page |<br /> Call Rates</h1>
 	  
 	  	        <div id="MenuIconContainer">';
 	
