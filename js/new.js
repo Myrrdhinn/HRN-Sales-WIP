@@ -107,8 +107,7 @@
 function save_data(mode) {
 	
   //get the data
-		  var FirstName = $('#FirstName').val();
-		  var LastName = $('#LastName').val();
+		  var name = $('#Name').val();
 		  var DelegateTitle = $('#DelegateTitle').val();
 		  var CompanyName = $('#CompanyName').val();
 		  var Country = $('#Country').val();
@@ -119,6 +118,7 @@ function save_data(mode) {
 		  var Reason = $('#Reason').val();
 		  var Edit = $('#Edit_val').val();
 		  var Price = $('#SellPrice').val(); 
+		  var DateOfPitch = $('#DateOfPitch').val();
 		  
 		  if ((typeof Edit == "undefined") || Edit == '') {
 			  Edit = -1;
@@ -130,9 +130,8 @@ function save_data(mode) {
 		  
 		  
 		  	   //check if the fields are filled out or not
-			if ((typeof FirstName != "undefined") && FirstName != '' && (typeof LastName != "undefined") && LastName != '' 
-			&&  (typeof DelegateTitle != "undefined") && DelegateTitle != '' && (typeof CompanyName != "undefined") && CompanyName != '' &&
-			(typeof Country != "undefined") && Country != '' && (typeof PitchType != "undefined") && PitchType != '' && (typeof PitchResult != "undefined") && PitchResult != '') {
+			if ((typeof name != "undefined") && name != '' &&  (typeof DelegateTitle != "undefined") && DelegateTitle != '' && (typeof CompanyName != "undefined") && CompanyName != '' &&
+			(typeof Country != "undefined") && Country != '' && (typeof PitchType != "undefined") && PitchType != '' && (typeof PitchResult != "undefined") && PitchResult != '' && (typeof DateOfPitch != "undefined") && DateOfPitch != '') {
 				
 
 				
@@ -141,9 +140,9 @@ function save_data(mode) {
 								 $.ajax({
 						url: 'controllers/ajax.php',
 						type: 'POST',
-						data: {action:mode, FirstName:FirstName, LastName:LastName, DelegateTitle:DelegateTitle, 
+						data: {action:mode, name:name, DelegateTitle:DelegateTitle, 
 						CompanyName:CompanyName, Country:Country, PitchType:PitchType, CallBackDate:CallBackDate, 
-						PitchResult:PitchResult, NumberOfDeals:NumberOfDeals, Reason:Reason, Edit:Edit, Price:Price},
+						PitchResult:PitchResult, NumberOfDeals:NumberOfDeals, Reason:Reason, Edit:Edit, Price:Price, DateOfPitch:DateOfPitch},
 						success: function(data) {
 							
 							if (data != '' && typeof data != 'undefined'){
@@ -158,6 +157,7 @@ function save_data(mode) {
 				
 			} else {
 		
+		        console.log(DateOfPitch);
 			    //if stuff is missing
 				window.location.hash = '#ReturnValue';
 				$("#ReturnValue").html('<i class="fa fa-exclamation-triangle"></i> Please, fill out the missing fields!');
@@ -165,24 +165,24 @@ function save_data(mode) {
 				$("#ReturnValue").fadeIn('slow');
 				
 				
-			    if (typeof FirstName == "undefined" || FirstName == '') {
-					$('#FirstName').css("border","1px solid #9B1515");
+			    if (typeof name == "undefined" || name == '') {
+					$('#Name').css("border","1px solid #9B1515");
 				} else {
-					$('#FirstName').css("border","1px solid #cccccc");
+					$('#Name').css("border","1px solid #cccccc");
 				}
 	
-	
-				if (typeof LastName == "undefined" || LastName == '') {
-					$('#LastName').css("border","1px solid #9B1515");
-				} else {
-					$('#LastName').css("border","1px solid #cccccc");
-				}
 	
 	
 			    if (typeof DelegateTitle == "undefined" || DelegateTitle == '') {
 					$('#DelegateTitle').css("border","1px solid #9B1515");
 				} else {
 					$('#DelegateTitle').css("border","1px solid #cccccc");
+				}
+	
+				 if (typeof DateOfPitch == "undefined" || DateOfPitch == '') {
+					$('#DateOfPitch').css("border","1px solid #9B1515");
+				} else {
+					$('#DateOfPitch').css("border","1px solid #cccccc");
 				}
 	
 	

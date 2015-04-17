@@ -73,13 +73,12 @@ use HRNSales\main as main;
 	//-------------------------------------------------------------------------         
 	if (isset($_SESSION['edit_pitch'])) {
 		$data = $main->get_pitch_edit_data($_SESSION['edit_pitch']);
-
+ $today = date('Y-m-d');
 	     $content .='<form id="speakers" name="speakers" method="post" action="controllers/ajax.php" enctype="multipart/form-data"><br />
   
      <fieldset>
 	    <legend>Delegate</legend>
-		<input class="AdminInputField" required="required" name="FirstName" id="FirstName" type="text" placeholder="First Name" value="'.$data['first_name'].'" /><br />
-		<input class="AdminInputField" required="required" name="LastName" id="LastName" type="text" placeholder="Last Name" value="'.$data['last_name'].'" /><br />
+		<input class="AdminInputField" required="required" name="Name" id="Name" type="text" placeholder="Name" value="'.$data['first_name'].' '.$data['last_name'].'" /><br />
         <input class="AdminInputField" name="DelegateTitle" id="DelegateTitle" type="text" placeholder="Title" value="'.$data['title'].'" /><br />
 		<input class="AdminInputField" required="required" name="CompanyName" id="CompanyName" type="text" placeholder="Company Name" value="'.$data['company_name'].'" /><br />
 		
@@ -93,6 +92,7 @@ use HRNSales\main as main;
 
 	  <fieldset>
 	     <legend>Pitch</legend>
+		 <br /><label>Date of Pitch:<input class="AdminInputField" id="DateOfPitch" name="DateOfPitch" type="date" value="'.$data['PitchDate'].'" max="'.$today.'"/></label>
 		 
 		   <br /><select class="SelectClass" id="PitchType" name="PitchType">';
 	        $content .= $main->get_pitch_type($data['ptype']);
@@ -128,8 +128,7 @@ use HRNSales\main as main;
   
      <fieldset>
 	    <legend>Delegate</legend>
-		<input class="AdminInputField" required="required" name="FirstName" id="FirstName" type="text" placeholder="First Name" /><br />
-		<input class="AdminInputField" required="required" name="LastName" id="LastName" type="text" placeholder="Last Name" /><br />
+		<input class="AdminInputField" required="required" name="Name" id="Name" type="text" placeholder="Name" /><br />
         <input class="AdminInputField" name="DelegateTitle" id="DelegateTitle" type="text" placeholder="Title" /><br />
 		<input class="AdminInputField" required="required" name="CompanyName" id="CompanyName" type="text" placeholder="Company Name" /><br />
 		
@@ -144,10 +143,12 @@ use HRNSales\main as main;
 	
      </fieldset>';
 
+   $today = date('Y-m-d');
   $content .='
 
 	  <fieldset>
 	     <legend>Pitch</legend>
+		 <br /><label>Date of Pitch:<input class="AdminInputField" id="DateOfPitch" name="DateOfPitch" type="date" max="'.$today.'"/></label>
 		 
 		   <br /><select class="SelectClass" id="PitchType" name="PitchType">';
 	        $content .= $main->get_pitch_type('');

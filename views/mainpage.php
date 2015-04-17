@@ -62,6 +62,12 @@ if (isset($_SESSION['user'])) {
 		 $content .='" onmouseout="this.src=';
 		 $content .="'img/icons/list.png';";
 		 $content .='" ></a>';
+		 
+		 $content .= '<a href="user" title="Pitch List"><img class="MenuIcon" src="img/icons/user.png" onmouseover="this.src=';
+		 $content .="'img/icons/user_hover.png';";
+		 $content .='" onmouseout="this.src=';
+		 $content .="'img/icons/user.png';";
+		 $content .='" ></a>';
 	 
 	
 	 
