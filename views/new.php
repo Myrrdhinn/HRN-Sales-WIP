@@ -107,7 +107,7 @@ use HRNSales\main as main;
            </select><br />
 		   <input class="AdminInputField" name="SellPrice" id="SellPrice" type="text" placeholder="Selling Price" value="'.$data['price'].'" /><br />
 		  <input class="AdminInputField" id="NumberOfDeals" name="NumberOfDeals" type="number" placeholder="Number of Deals" value="'.$data['deals'].'" /><br />
-	      <textarea class="TextAreaClass" id="Reason" name="Reason">'.$data['reason'].'</textarea><br />
+	      <textarea class="TextAreaClass" id="Reason" name="Reason" maxlength="30">'.$data['reason'].'</textarea><br />
            <input type="hidden" id="Edit_val" value="'.$_SESSION['edit_pitch'].'">  
    </fieldset>';
   
@@ -157,13 +157,17 @@ use HRNSales\main as main;
 		 
 
 		  <label>Call back date:<input class="AdminInputField" id="CallBackDate" name="CallBackDate" type="date" /></label><br />
-		   <select class="SelectClass" id="PitchResult" name="PitchResult">';
+		   <label>Result<br/><select class="SelectClass" id="PitchResult" name="PitchResult">';
 	        $content .= $main->get_pitch_result('');
             $content .=' 
-           </select><br />
-		   <input class="AdminInputField" name="SellPrice" id="SellPrice" type="text" placeholder="Selling Price"/><br />
-		  <input class="AdminInputField" id="NumberOfDeals" name="NumberOfDeals" type="number" placeholder="Number of Deals" /><br />
-	      <textarea class="TextAreaClass" id="Reason" name="Reason" placeholder="Reason"></textarea><br />
+           </select></label><br />
+		  
+		  <div id="DealHolder" style="display:none">
+		     <label>Selling Price (Numbers only)<input class="AdminInputField" name="SellPrice" id="SellPrice" type="number" placeholder="0" value="0"/></label><br />
+		     <label>Number of Deals (Numbers only) <input class="AdminInputField" id="NumberOfDeals" name="NumberOfDeals" type="number" placeholder="Number of Deals" value="0" /></label><br />
+		  </div> 
+		  Max length is 160 characters
+	      <textarea class="TextAreaClass" id="Reason" name="Reason" placeholder="Reason" maxlength="160"></textarea><br />
 
    </fieldset>';
 

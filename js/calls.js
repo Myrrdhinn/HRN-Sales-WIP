@@ -19,7 +19,7 @@
 						success: function(data) {
 							
 							if (data != '' && typeof data != 'undefined'){
-                                 $('#Pitch_Container').html(data);								
+                                 $('#Pitch_Container').html(data);						
 								 
 							}
 							
@@ -34,15 +34,14 @@
   
   
   
-	   
-	   
-      });
-
-
-function save_call_num(id) {
-
+   $('.CallSubmit').bind('click', function (e) {
 	
-	var num = $('#CallInputField').val();
+		e.preventDefault();
+	    e.stopPropagation();
+	
+	var num = $(this).siblings('label').children('.CallInputField').val();
+	var id= $(this).data('userid');
+
 	
 	if (typeof num != "undefined" && num !=0 && typeof id !="undefined" && id != 0) {
 		
@@ -104,20 +103,27 @@ function save_call_num(id) {
 		
 	}
 	
-}
-
-
-function save_minutes_num(id) {
-
+  
+ })  	
+ 
+ 
+ 
+    $('.MinutesSubmit').bind('click', function (e) {
 	
-	var num = $('#MinutesInputField').val();
+		e.preventDefault();
+	    e.stopPropagation();
+		
+	var callnum = $(this).parent('.MinuteContainer').siblings('.CallContainer').children('label').children('.CallInputField').val();
+	var id= $(this).data('userid');
+
+	var minutenum = $(this).siblings('label').children('.MinutesInputField').val();
 	
-	if (typeof num != "undefined" && num !=0 && typeof id !="undefined" && id != 0) {
+	if (typeof id !="undefined" && id != 0) {
 		
 					  		$.ajax({
 						url: 'controllers/ajax.php',
 						type: 'POST',
-						data: {action:'save_minutes_num', num:num, id:id},
+						data: {action:'save_minutes_num', callnum:callnum, minutenum:minutenum, id:id},
 						success: function(data) {
 							
 							if (data != '' && typeof data != 'undefined'){
@@ -172,4 +178,9 @@ function save_minutes_num(id) {
 		
 	}
 	
-}
+  
+ })  
+    
+	   
+      });
+

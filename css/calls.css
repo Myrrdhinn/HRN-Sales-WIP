@@ -28,7 +28,35 @@
   padding:1vw;
 }
 
-#CallInputs {
+.CallInputs {
   display: inline-block;
-  width: 320px;
+  width: 100%;
+  max-width:100%;
+}
+
+.AdminInputField {
+	
+	  max-width: 70px;
+	  display:inline-block;
+}
+
+.AdminSubmitButton{
+	
+	max-width:95px;
+	font-size: 19px;
+	margin-bottom: 5px;	
+	text-align:center;
+}
+
+.CallContainer, .MinuteContainer {
+	
+display:inline-block;	
+}
+
+.CallContainer{
+	
+}
+
+.MinuteContainer{
+	
 }

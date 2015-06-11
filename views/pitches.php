@@ -21,6 +21,13 @@ use HRNSales\pitches as pitches;
 <!--Include Font Awesome -->
 <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 
+<!-- Token input -->
+<script type="text/javascript" src="vendor/autocomplete/src/jquery.tokeninput.js"></script>
+
+<link rel="stylesheet" href="vendor/autocomplete/styles/token-input.css" type="text/css" />
+<link rel="stylesheet" href="vendor/autocomplete/styles/token-input-facebook.css" type="text/css" />
+
+
 <script src="js/pitch.js"></script> 
 
 </head>
@@ -66,14 +73,48 @@ use HRNSales\pitches as pitches;
 				$content .='<div id="ReturnValue" style="display:none"></div>';
 			}
    
-				if (isset($_SESSION['admin'])) {
+
+   
+   		  $content .='<select id="Months" class="SelectClass">
+		    <option value="-1" hidden="hidden">Month</option>
+			<option value="All">All</option>
+			<option value="01">January</option>
+			<option value="02">February</option>
+			<option value="03">March</option>
+			<option value="04">April</option>
+			<option value="05">May</option>
+			<option value="06">June</option>
+			<option value="07">July</option>
+			<option value="08">August</option>
+			<option value="09">September</option>
+			<option value="10">October</option>
+			<option value="11">November</option>
+			<option value="12">December</option>
+		
+	   </select>';
+	   
+	   		  if (isset($_SESSION['admin'])) {
 				  $admin = $_SESSION['admin'];	
 				}
 				else {
 					$admin = $_SESSION['user_id'];
+					$content.= $main->motivation();
 				}
+	   
    
    	    $content .='<div id="Advanced">
+		<p class="SelectLabel">Callback Date</p>';
+		if (isset($_SESSION['admin']) && $_SESSION['admin'] < 2) {
+					
+		$content .='
+		<p class="SelectLabel">Team Member</p>
+		<p class="SelectLabel">Team</p>';
+		}
+
+		$content .='
+		<p class="SelectLabel">Pitch Type</p>
+		<p class="SelectLabel">Result Type</p>
+		<br />
 		  <select id="Callbacks" class="SelectClass">
 		';
 		
@@ -90,6 +131,7 @@ use HRNSales\pitches as pitches;
         $content .='
 		  </select>';
 		  
+
 		  
 				if ($_SESSION['admin'] < 2) {
 					  $content .='
@@ -103,8 +145,26 @@ use HRNSales\pitches as pitches;
 				}
 		}
 		  
+		   $content .='<select class="SelectClass" id="PitchType" name="PitchType">
+		   <option value="" hidden="hidden" selected="selected">Select a Pitch Type</option>
+		   <option value="All">All</option>';
+	        $content .= $main->get_pitch_type('moo'); 
+            $content .=' 
+           </select>';
+		   
+		   $content .='<select class="SelectClass" id="PitchResult" name="PitchResult">
+		   <option value="" hidden="hidden" selected="selected">Select a Result Type</option>
+		   <option value="All">All</option>';
+	        $content .= $main->get_pitch_result('moo');
+            $content .=' 
+           </select>';
+ $content .=' <button id="ClearFilters">Clear Filters</button>';
+		  
+		  $content .='<label><br />Company search<input type="text" id="SearchField" /></search>'; 
 		 $content .='</div>';
          
+		$content .='<div id="loadingtext" style="display:none">Loading <img style="width:40px" alt="loading" src="img/icons/loading.gif" /></div>';
+		 
 		 $category = ''; 
 		 $value = ''; 
 		   
@@ -119,10 +179,23 @@ use HRNSales\pitches as pitches;
 		
 		*/
 
-			 
+     $_SESSION['PitchSelectedCallback'] = '';
+	 $_SESSION['PitchSelectedTmembers'] = '';
+	 $_SESSION['PitchSelectedTeams'] = '';
+	 $_SESSION['PitchFilterCompany'] = '';
+     $currentMonth = date('m'); 
+	 $_SESSION['PitchSelectedMonth'] = $currentMonth;
+	 $_SESSION['PitchFilterOrder'] = 'Date';
+	 $_SESSION['PitchSelectedOrderType'] = 'DESC';
+	 $_SESSION['PitchSelectedPitchType'] = '';
+	 $_SESSION['PitchSelectedResultType'] = '';
+     
+
+
+					  
 			 //Get the pitch data
 	    $content .='<div id="Pitch_Container">';
-		$content .= $pitches->list_pithces($category,$value, $admin);
+		$content .= $pitches->list_pithces($_SESSION['PitchSelectedCallback'],$_SESSION['PitchSelectedTmembers'],$_SESSION['PitchSelectedTeams'], $admin, $_SESSION['PitchFilterCompany'], $currentMonth, $_SESSION['PitchFilterOrder'], $_SESSION['PitchSelectedOrderType'], $_SESSION['PitchSelectedPitchType'], $_SESSION['PitchSelectedResultType']);
         $content .='</div>';
 	    
 	   

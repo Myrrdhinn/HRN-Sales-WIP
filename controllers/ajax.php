@@ -28,7 +28,7 @@ Save pitch data
 Save number of calls
 ///////////////*/
 
-
+/*
  if(isset($_POST['action']) && $_POST['action'] == 'save_call_num'){
 	$the_main = new main\main;
     $result = $the_main->save_call_number();
@@ -38,7 +38,7 @@ Save number of calls
 	}
 
 }// save Pitch data
-
+*/
 
 /*///////////// 
 Save number of minutes
@@ -145,27 +145,62 @@ Get Graph data Intervall
 }// save Pitch data
 
 
+
+
 /*///////////// 
-Pitches Filter
+Pitches Filter change
 ///////////////*/
 
 
- if(isset($_POST['action']) && $_POST['action'] == 'pitches_filter'){
-	$pitch = new pitches\pitches;
-	if($_POST['data'] == 'All' || $_POST['data'] == '') {
-		$category = '';
-	    $value = '';
+ if(isset($_POST['action']) && $_POST['action'] == 'pitch_list_change'){
+	 
+	 if (isset($_POST['month'])){
+		 $_SESSION['PitchSelectedMonth'] = $_POST['month'];
+	 }
+	 
+	if (isset($_SESSION['PitchSelectedMonth'])){
+        $currentMonth = $_SESSION['PitchSelectedMonth'];
 	} else {
-		$category = $_POST['category'];
-	    $value = $_POST['data'];
+		$currentMonth = date('m');
 	}
 	
+	 if (isset($_POST['pitch'])){
+		  $_SESSION['PitchSelectedPitchType'] = $_POST['pitch'];
+	 }
+	
+	if (isset($_POST['result'])){
+		  $_SESSION['PitchSelectedResultType'] = $_POST['result'];
+	 }
+	 
+	if (isset($_POST['callback'])){
+		  $_SESSION['PitchSelectedCallback'] = $_POST['callback'];
+	 }	
+	 
+	if (isset($_POST['tmembers'])){
+		  $_SESSION['PitchSelectedTmembers'] = $_POST['tmembers'];
+	 }	
+	 
+	if (isset($_POST['teams'])){
+		  $_SESSION['PitchSelectedTeams'] = $_POST['teams'];
+	 }	
+	 
+	if (isset($_POST['company'])){
+		 $_SESSION['PitchFilterCompany'] = $_POST['company'];
+	 }	 
+	 
+	   
+		
 	if (isset($_SESSION['admin'])) {
 		 $admin = $_SESSION['admin'];
 	} else {
 		 $admin = $_SESSION['user_id'];
-	}
-    $result = $pitch->list_pithces($category,$value, $admin);
+	}	
+		
+	  $pitch = new pitches\pitches;
+      $result = $pitch->list_pithces($_SESSION['PitchSelectedCallback'],$_SESSION['PitchSelectedTmembers'],$_SESSION['PitchSelectedTeams'], $admin, $_SESSION['PitchFilterCompany'], $currentMonth, $_SESSION['PitchFilterOrder'], $_SESSION['PitchSelectedOrderType'], $_SESSION['PitchSelectedPitchType'], $_SESSION['PitchSelectedResultType']);
+	
+
+	
 	if (isset($result)) {
       echo $result;	
 	}
@@ -173,6 +208,52 @@ Pitches Filter
 }// save Pitch data
 
 
+/*///////////// 
+Pitches Filter Order change
+///////////////*/
+
+
+ if(isset($_POST['action']) && $_POST['action'] == 'pitch_list_order_change'){
+
+
+		if(isset($_SESSION['PitchFilterOrder']) && $_SESSION['PitchFilterOrder'] == $_POST['order']){
+			
+		    if ($_SESSION['PitchSelectedOrderType'] == 'DESC'){
+				$_SESSION['PitchSelectedOrderType'] = 'ASC';
+			} else {
+			   if ($_SESSION['PitchSelectedOrderType'] == 'ASC'){
+				$_SESSION['PitchSelectedOrderType'] = 'DESC';
+				
+			    }
+			}
+			
+
+		 
+		}else {
+			$_SESSION['PitchFilterOrder'] = $_POST['order'];
+			$_SESSION['PitchSelectedOrderType'] = 'DESC';
+		}
+		
+		
+	if (isset($_SESSION['admin'])) {
+		 $admin = $_SESSION['admin'];
+	} else {
+		 $admin = $_SESSION['user_id'];
+	}	
+		
+	  $pitch = new pitches\pitches;
+      $result = $pitch->list_pithces($_SESSION['PitchFilterCategory'],$_SESSION['PitchFilterValue'], $admin, $_SESSION['PitchFilterCompany'], $_SESSION['PitchSelectedMonth'], $_SESSION['PitchFilterOrder'], $_SESSION['PitchSelectedOrderType'], $_SESSION['PitchSelectedPitchType'], $_SESSION['PitchSelectedResultType']);
+	
+
+	
+	if (isset($result)) {
+      echo $result;	
+	}
+
+}// save Pitch data
+
+		
+		
 /*///////////// 
 Filter the Team Member select box
 ///////////////*/
@@ -209,5 +290,77 @@ Callrate user filter
 	}
 
 }// save Pitch data
+
+
+/*///////////// 
+Get search data
+///////////////*/
+
+
+ if(isset($_POST['action']) && $_POST['action'] == 'get_search_data'){
+	$the_main = new main\main;
+	
+
+    $result = $the_main->get_search_data();
+	if (isset($result)) {
+	 
+	 echo $result;	
+	}
+
+
+}
+
+
+
+/*///////////// 
+Create user
+///////////////*/
+
+
+ if(isset($_POST['action']) && $_POST['action'] == 'add_new_admin'){
+	$the_main = new main\main;
+	
+
+    $result = $the_main->add_user();
+	if (isset($result)) {
+	 $_SESSION['Result'] = "User have been saved!";
+	 echo $result;	
+	}
+
+
+}// new user
+
+/*///////////// 
+Edit user
+///////////////*/
+
+
+ if(isset($_POST['action']) && $_POST['action'] == 'edit_user_data_save'){
+	$the_main = new main\main;
+	
+
+    $result = $the_main->edit_user();
+	if (isset($result)) {
+	 $_SESSION['Result'] = "User have been saved!";
+	 echo $result;	
+	}
+
+
+}// new user
+
+/*///////////// 
+User Edit Request
+///////////////*/
+
+
+ if(isset($_POST['action']) && $_POST['action'] == 'user_edit_request'){
+	$the_main = new main\main;
+	
+	if (isset($_POST['sId'])){
+	   $_SESSION['user_edit_id'] = $_POST['sId'];	
+	}
+
+
+}// new user
 
 ?>

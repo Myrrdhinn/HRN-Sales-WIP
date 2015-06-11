@@ -2,17 +2,17 @@
 /* General Definitions*/
 
 .TableRow {
-  display: table-cell;
-  padding: 5px 5px;
-  max-width: 200px;
-  min-width: 100px;
-  overflow-wrap: break-word;
-  text-align:center;
+  display: inline-block;
+  padding: 0.6vw;
+  width: 6.5vw;
+  /* min-width: 2vw; */
+  /* overflow-wrap: break-word; */
+  text-align: center;
 }
 
 .TableCol {
-  display: table-row;
-  cursor:pointer;
+  display: inline-block;
+  cursor: pointer;
 }
 
 .TableCol:hover {
@@ -35,7 +35,7 @@
 	
 }
 
-
+/*
 @media (min-width: 1600px) {
 	.PitchTable {
 	  width: 100%;
@@ -44,4 +44,39 @@
 	
 }
 	
+}
+
+*/
+#MenuIconContainer {
+  position: absolute;
+  top: 1vw;
+  right: 10vw;
+}
+
+.SelectClass {
+  max-width: 16vw;
+}
+
+#loadingtext {
+  position: absolute;
+  margin: 7vw 40%;
+  padding: 2vw;
+  background-color: rgba(0, 0, 0, 0.87);
+  color: white;
+  font-size: 2vw;
+  font-weight: 500;
+  font-family: sans-serif;
+}
+
+.SelectLabel{
+  display: inline-block;
+  width: 16vw;
+  margin: 0 0 0.5vw;
+  text-align: center;
+}
+
+#MotivationalText{
+  display: inline-block;
+  margin-left: 8vw;
+  
 }

@@ -53,9 +53,9 @@ function show_graph(data) {
 	$('.chart').html('');
 
 var chartWidth       = 300,
-    barHeight        = 15,
+    barHeight        = 20,
     groupHeight      = barHeight * data.series.length,
-    gapBetweenGroups = 10,
+    gapBetweenGroups = 25,
     spaceForLabels   = 150,
     spaceForLegend   = 150;
 
@@ -72,8 +72,8 @@ var color = d3.scale.category20();
 var chartHeight = barHeight * zippedData.length + gapBetweenGroups * data.labels.length;
 
 var x = d3.scale.linear()
-    .domain([0, d3.max(zippedData)])
-    .range([0, chartWidth]);
+    .domain([1, d3.max(zippedData)])
+    .range([15, chartWidth]);
 
 var y = d3.scale.linear()
     .range([chartHeight + gapBetweenGroups, 0]);

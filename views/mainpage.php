@@ -62,12 +62,6 @@ if (isset($_SESSION['user'])) {
 		 $content .='" onmouseout="this.src=';
 		 $content .="'img/icons/list.png';";
 		 $content .='" ></a>';
-		 
-		 $content .= '<a href="user" title="Pitch List"><img class="MenuIcon" src="img/icons/user.png" onmouseover="this.src=';
-		 $content .="'img/icons/user_hover.png';";
-		 $content .='" onmouseout="this.src=';
-		 $content .="'img/icons/user.png';";
-		 $content .='" ></a>';
 	 
 	
 	 
@@ -88,13 +82,28 @@ if (isset($_SESSION['user'])) {
 		 $content .="'img/icons/analytics.png';";
 		 $content .='" ></a>';
 		 
-		 if ($_SESSION['admin'] < 2) {
+		 if ($_SESSION['admin'] < 3) {
 		 
 		 $content .= '<a href="calls" title="Call Rates"><img class="MenuIcon" src="img/icons/calls.png" onmouseover="this.src=';
 		 $content .="'img/icons/calls_hover.png';";
 		 $content .='" onmouseout="this.src=';
 		 $content .="'img/icons/calls.png';";
 		 $content .='" ></a>';
+		 	 
+		 $content .= '<a href="add_user" title="Add new user"><img class="MenuIcon" src="img/icons/user.png" onmouseover="this.src=';
+		 $content .="'img/icons/user_hover.png';";
+		 $content .='" onmouseout="this.src=';
+		 $content .="'img/icons/user.png';";
+		 $content .='" ></a>';
+		 }
+		 
+		 if ($_SESSION['admin'] == 0 || $_SESSION['user_id'] == 2) {
+			 $content .= '<a href="user_list" title="Edit User"><img class="MenuIcon" src="img/icons/user_edit.png" onmouseover="this.src=';
+			 $content .="'img/icons/user_edit_hover.png';";
+			 $content .='" onmouseout="this.src=';
+			 $content .="'img/icons/user_edit.png';";
+			 $content .='" ></a>'; 
+			 
 		 }
 	}
 	 

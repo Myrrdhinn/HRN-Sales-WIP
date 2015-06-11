@@ -1,0 +1,8 @@
+@charset "utf-8";
+/* General Definitions*/
+
+
+.UserClass {
+	padding: 0.5vw;
+    cursor: pointer;
+}
